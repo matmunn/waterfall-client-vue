@@ -1,0 +1,17 @@
+// Fonts
+@import url(https://fonts.googleapis.com/css?family=Roboto:300,400,600,700);
+
+// Variables
+@import "variables";
+
+// Bootstrap
+@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+
+@import "~font-awesome-sass/assets/stylesheets/font-awesome";
+@import "~sweetalert2/src/sweetalert2";
+@import "~toastr/build/toastr";
+@import "~savi-bootstrap-daterangepicker/daterangepicker.scss";
+
+td, th {
+    border: 1px solid black;
+}
