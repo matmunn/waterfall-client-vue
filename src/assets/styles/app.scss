@@ -11,7 +11,21 @@
 @import "~sweetalert2/src/sweetalert2";
 @import "~toastr/build/toastr";
 @import "~savi-bootstrap-daterangepicker/daterangepicker.scss";
+@import "~buefy/lib/buefy.css";
 
 td, th {
     border: 1px solid black;
+}
+
+.swal2-shown {
+  .columns {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+a {
+  &:hover {
+    text-decoration: none;
+  }
 }

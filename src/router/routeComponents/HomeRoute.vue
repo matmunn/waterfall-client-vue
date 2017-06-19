@@ -1,36 +1,43 @@
 <template>
   <div>
     <div>
-      <img src="/img/savi-logo.svg" class="logo">
+      <img src="/static/img/logo.svg" class="logo">
     </div>
-    <ul class="nav nav-tabs" role="tablist">
-      <li v-for="category in displayCategories" :class='isUserCategory(category.id)' :key="category.id" role="presentation">
-        <a :href="'#' + categorySafeName(category.description)" role="tab" data-toggle="tab">{{ category.description }}</a>
-      </li>
-      <li role="presentation" class="pull-right">
-        <router-link to='/logout'>Logout</router-link>
-      </li>
-      <li role="presentation" class="pull-right">
-        <router-link to='/admin'>Admin</router-link>
-      </li>
-      <li role="presentation" class="pull-right">
-        <DatePicker :value='startDate' :input-class="datepickerInputClass" @selected='chooseDate' :wrapper-class='datepickerWrapperClass'></DatePicker>
-        to
-        <DatePicker :value='endDate' :input-class="datepickerInputClass" @selected='chooseDate' :wrapper-class='datepickerWrapperClass'></DatePicker>
-      </li>
-    </ul>
-    <div class='tab-content'>
-      <CategoryTabPanel v-for='category in displayCategories' :key='category.id' :category='category' :id='categorySafeName(category.description)' />
+    <div class="date-inputs">
+      Welcome Mat
+      <div class="field has-addons">
+        <p class="control">
+          <DatePicker :value='startDate' :input-class="datepickerInputClass" @selected='chooseDate' :wrapper-class='datepickerWrapperClass'></DatePicker>
+        </p>
+        <p class="control">
+          <span class="button is-static">
+            to
+          </span>
+        </p>
+        <p class="control">
+          <DatePicker :value='endDate' :input-class="datepickerInputClass" @selected='chooseDate' :wrapper-class='datepickerWrapperClass'></DatePicker>
+        </p>
+      </div>
+      <router-link to='/logout'>Logout</router-link>
     </div>
+    <b-tabs v-model='activeTab' :animated='false'>
+      <b-tab-item v-for='category in displayCategories' :key='category.id' :label='category.description'>
+        <CategoryTabPanel :key='category.id' :category='category' :id='categorySafeName(category.description)'></CategoryTabPanel>
+      </b-tab-item>
+    </b-tabs>
   </div>
 </template>
 
 <style scoped>
 .logo {
-  width: 10%;
+  width: 20%;
   max-width: 300px;
   margin: 1vh auto 2vh;
   display: block;
+}
+.date-inputs {
+  text-align: center;
+  margin-bottom: 2vh;
 }
 </style>
 <style>
@@ -46,9 +53,11 @@
 import Auth from 'Auth'
 import moment from 'moment'
 import DatePicker from 'vuejs-datepicker'
+// import DatePicker from 'vue-bulma-datepicker'
 import { toastr, getTask } from 'Helpers'
 import { mapActions, mapGetters } from 'vuex'
 import { CategoryTabPanel } from 'Components'
+// import { findIndex } from 'lodash'
 
 export default {
   name: 'HomeRoute',
@@ -65,7 +74,8 @@ export default {
       datepickerInputClass: 'form-control',
       datepickerWrapperClass: 'inline',
       taskCount: 999,
-      noteCount: 999
+      noteCount: 999,
+      activeTab: 0
     }
   },
   computed: mapGetters(['displayCategories']),
@@ -87,7 +97,7 @@ export default {
       isUserCategory (categoryId) {
         if (Auth.isLoggedIn()) {
           if (Auth.getUser().category_id === categoryId) {
-            return 'active'
+            return 'is-active'
           }
         }
         return ''
@@ -105,7 +115,9 @@ export default {
     }
   ),
   created () {
-    this.getAllCategories().catch(() => {
+    this.getAllCategories().then(() => {
+      // this.activeTab = findIndex(this.displayCategories, item => item.id === Auth.getUser().category_id)
+    }).catch(() => {
       toastr.error('There was an error fetching categories', 'Error')
     })
     this.getAllUsers().catch(() => {
@@ -122,8 +134,8 @@ export default {
     this.fetchTasksWithDates()
 
     if (Auth.isLoggedIn()) {
-      window.Echo.connector.pusher.config.auth.headers['Authorization'] = `Bearer ${Auth.getToken()}`
-      window.Echo.private(`App.User.${Auth.getUser().id}`)
+      this.$echo.connector.pusher.config.auth.headers['Authorization'] = `Bearer ${Auth.getToken()}`
+      this.$echo.private(`App.User.${Auth.getUser().id}`)
         .listen('.NoteAdded', data => {
           toastr.info(`A new note was added to your task '${getTask(data.note.entry_id).description}'`, 'Notice')
           if (this.$store.getters.notificationPermission !== 'denied') {

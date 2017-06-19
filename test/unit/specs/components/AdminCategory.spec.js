@@ -1,9 +1,10 @@
-import Vue from 'vue'
 import AdminCategory from '@/components/AdminCategory'
 import helpers from 'Helpers'
-import { getRenderedText } from '../../helpers'
+import store from '@/store'
+import router from '@/router'
+import { mount } from 'avoriaz'
 
-const testCategory = {
+const testData = {
   category: {
     id: 1,
     description: 'Test Category',
@@ -12,43 +13,43 @@ const testCategory = {
   }
 }
 
-describe('AdminCategory.vue', () => {
+describe('components/AdminCategory.vue', () => {
   it('should render correct contents', () => {
-    expect(getRenderedText(AdminCategory, testCategory))
-      .to.include('Test Category')
+    const wrapper = mount(AdminCategory, { propsData: testData, router })
+
+    expect(wrapper.text()).to.include('Test Category')
   })
 
   it('should compute values correctly', () => {
-    const Ctor = Vue.extend(AdminCategory)
-    const vm = new Ctor({ propsData: testCategory }).$mount()
+    const wrapper = mount(AdminCategory, { propsData: testData, router })
 
-    expect(vm.deleteLink).to.equal(`/admin/categories/1/delete`)
-    expect(vm.fillSample).to.equal(`background-color: #FF0000`)
-    expect(vm.editLink).to.equal(`/admin/categories/1/edit`)
+    expect(wrapper.vm.deleteLink).to.equal(`/admin/categories/1/delete`)
+    expect(wrapper.vm.fillSample).to.equal(`background-color: #FF0000`)
+    expect(wrapper.vm.editLink).to.equal(`/admin/categories/1/edit`)
   })
 
-  it('deleteCategory should work as expected', function () {
+  it('confirmDelete should work as expected', function () {
     const swalStub = sinon.stub(helpers, 'swal').resolves()
 
-    const Ctor = Vue.extend(AdminCategory)
-    const vm = new Ctor({ propsData: testCategory }).$mount()
+    const wrapper = mount(AdminCategory, { store, propsData: testData, router })
 
-    const dispatchDeleteStub = sinon.stub(vm, 'dispatchDelete').returns(true)
+    const dispatchDeleteStub = sinon.stub(wrapper.vm, 'deleteCategory').returns(true)
 
-    return vm.deleteCategory().then(() => {
+    return wrapper.vm.confirmDelete().then(() => {
       expect(swalStub.called).to.equal(true)
       expect(dispatchDeleteStub.called).to.equal(true)
+      expect(dispatchDeleteStub.calledWith(1)).to.equal(true)
 
       swalStub.restore()
     })
   })
 
-  it('deleteCategory does nothing on cancel', () => {
+  it('confirmDelete does nothing on cancel', () => {
     const stub = sinon.stub(helpers, 'swal').rejects()
-    const Ctor = Vue.extend(AdminCategory)
-    const vm = new Ctor({ propsData: testCategory }).$mount()
 
-    vm.deleteCategory()
+    const wrapper = mount(AdminCategory, { store, router, propsData: testData })
+
+    wrapper.vm.confirmDelete()
 
     expect(stub.called).to.equal(true)
 

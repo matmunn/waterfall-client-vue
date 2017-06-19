@@ -1,3 +1,4 @@
+import config from 'Config'
 import axios from 'axios'
 import { SET_CLIENTS, ADD_CLIENT, UPDATE_CLIENT, DELETE_CLIENT } from '@/store/mutations'
 import { findIndex, filter, find } from 'lodash'
@@ -5,7 +6,7 @@ import { findIndex, filter, find } from 'lodash'
 export const actions = {
   getAllClients ({ commit }) {
     return new Promise((resolve, reject) => {
-      axios.get('/api/clients').then(response => {
+      axios.get(`${config.apiHost}/api/clients`).then(response => {
         if (response.status === 200) {
           commit(SET_CLIENTS, response.data)
           resolve(true)
@@ -18,7 +19,7 @@ export const actions = {
   },
   addClient ({ commit }, clientData) {
     return new Promise((resolve, reject) => {
-      axios.post(`/api/client`, clientData).then(response => {
+      axios.post(`${config.apiHost}/api/client`, clientData).then(response => {
         if (response.status === 201) {
           resolve(true)
         }
@@ -30,7 +31,7 @@ export const actions = {
   },
   editClient ({ commit }, clientData) {
     return new Promise((resolve, reject) => {
-      axios.patch(`/api/client/${clientData.id}`, clientData).then(response => {
+      axios.patch(`${config.apiHost}/api/client/${clientData.id}`, clientData).then(response => {
         if (response.status === 200) {
           resolve(true)
         }
@@ -42,7 +43,7 @@ export const actions = {
   },
   deleteClient ({ commit }, clientId) {
     return new Promise((resolve, reject) => {
-      axios.delete(`/api/client/${clientId}`).then(response => {
+      axios.delete(`${config.apiHost}/api/client/${clientId}`).then(response => {
         if (response.status === 200) {
           resolve(true)
         }

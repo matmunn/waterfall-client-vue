@@ -1,3 +1,4 @@
+import config from 'Config'
 import axios from 'axios'
 import moment from 'moment'
 import { SET_TASKS, ADD_TASK, UPDATE_TASK, DELETE_TASK, SET_TASK_COMPLETE_STATUS } from '@/store/mutations'
@@ -35,10 +36,10 @@ export const getters = {
     return sortBy(state.tasks, ['completed', 'start_date'])
   },
   userTasks: (state, getters) => (userId, startDate, endDate) => {
-    return filter(getters.sortedTasksWithDate(state, getters)(startDate, endDate), task => task.user_id === userId)
+    return filter(getters.sortedTasksWithDate(startDate, endDate), task => task.user_id === userId)
   },
   sortedTasksWithDate: (state, getters) => (startDate, endDate) => {
-    return filter(getters.sortedTasks(state), task => {
+    return filter(getters.sortedTasks, task => {
       const startTimeMatch = (moment(task.start_date) >= moment(startDate))
       const endTimeMatch = (moment(task.end_date) <= moment(endDate).hour(18).minute(0))
       return startTimeMatch && endTimeMatch
@@ -49,7 +50,7 @@ export const getters = {
 export const actions = {
   getAllTasks ({ commit }) {
     return new Promise((resolve, reject) => {
-      axios.get('/api/tasks').then(response => {
+      axios.get(`${config.apiHost}/api/tasks`).then(response => {
         if (response.status === 200) {
           commit(SET_TASKS, response.data)
           resolve(response.data.length)
@@ -62,7 +63,7 @@ export const actions = {
   },
   getTasksBetweenDates ({ commit }, dateRange = {start: moment().day(1).format('YYYY-MM-DD'), end: moment().day(5).format('YYYY-MM-DD')}) {
     return new Promise((resolve, reject) => {
-      axios.get(`/api/tasks/${dateRange.start}/${dateRange.end}`).then(response => {
+      axios.get(`${config.apiHost}/api/tasks/${dateRange.start}/${dateRange.end}`).then(response => {
         if (response.status === 200) {
           commit(SET_TASKS, response.data)
           resolve(response.data.length)
@@ -75,7 +76,7 @@ export const actions = {
   },
   markTaskComplete ({ commit }, taskId) {
     return new Promise((resolve, reject) => {
-      axios.patch(`/api/task/${taskId}/complete`).then(response => {
+      axios.patch(`${config.apiHost}/api/task/${taskId}/complete`).then(response => {
         if (response.status === 200) {
           resolve(true)
         }
@@ -87,7 +88,7 @@ export const actions = {
   },
   markTaskIncomplete ({ commit }, taskId) {
     return new Promise((resolve, reject) => {
-      axios.patch(`/api/task/${taskId}/incomplete`).then(response => {
+      axios.patch(`${config.apiHost}/api/task/${taskId}/incomplete`).then(response => {
         if (response.status === 200) {
           resolve(true)
         }
@@ -99,7 +100,7 @@ export const actions = {
   },
   addTask ({ commit }, taskData) {
     return new Promise((resolve, reject) => {
-      axios.post('/api/task', taskData).then(response => {
+      axios.post(`${config.apiHost}/api/task`, taskData).then(response => {
         if (response.status === 201) {
           resolve(true)
         }
@@ -111,7 +112,7 @@ export const actions = {
   },
   editTask ({ commit }, taskData) {
     return new Promise((resolve, reject) => {
-      axios.patch(`/api/task/${taskData.id}`, taskData).then(response => {
+      axios.patch(`${config.apiHost}/api/task/${taskData.id}`, taskData).then(response => {
         if (response.status === 200) {
           resolve(true)
         }
@@ -123,7 +124,7 @@ export const actions = {
   },
   deleteTask ({ commit }, taskId) {
     return new Promise((resolve, reject) => {
-      axios.delete(`/api/task/${taskId}`).then(response => {
+      axios.delete(`${config.apiHost}/api/task/${taskId}`).then(response => {
         if (response.status === 200) {
           resolve(true)
         }

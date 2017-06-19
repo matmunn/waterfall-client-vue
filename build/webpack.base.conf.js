@@ -25,7 +25,8 @@ module.exports = {
       '@': resolve('src'),
       'Auth': resolve('src/helpers/authentication'),
       'Helpers': resolve('src/helpers/helpers'),
-      'Components': resolve('src/components/components')
+      'Components': resolve('src/components/components'),
+      'Config': resolve('src/config')
     }
   },
   module: {

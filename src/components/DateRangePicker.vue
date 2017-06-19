@@ -12,7 +12,8 @@ input.form-control {
 
 <script>
 import $ from 'jquery'
-import daterangepicker from 'savi-bootstrap-daterangepicker'
+require('savi-bootstrap-daterangepicker')
+// import daterangepicker from 'savi-bootstrap-daterangepicker'
 import moment from 'moment'
 
 export default {
@@ -20,7 +21,7 @@ export default {
   props: ['value', 'startTime', 'endTime', 'id'],
   methods: {
     updateDates (startDate, endDate) {
-      this.$emit('input', {start: startDate, end: endDate})
+      this.$emit('input', { start: startDate, end: endDate })
     }
   },
   computed: {
@@ -29,7 +30,6 @@ export default {
     }
   },
   mounted () {
-    $.prototype.daterangepicker = daterangepicker
     $(`#${this.datepickerId}`).daterangepicker({
       timePicker: true,
       timePicker24Hour: true,

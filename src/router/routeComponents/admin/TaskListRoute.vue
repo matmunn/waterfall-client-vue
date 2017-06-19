@@ -55,7 +55,7 @@ table {
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { sortBy } from 'lodash'
+import { sortBy, filter } from 'lodash'
 import Auth from 'Auth'
 import moment from 'moment'
 import AdminTask from '@/components/AdminTask'
@@ -67,14 +67,12 @@ export default {
     AdminTask,
     DatePicker
   },
-  computed: Object.assign({},
-    mapGetters(['sortedTasks', 'users']),
-    {
-      taskList () {
-        return sortBy(this.$store.getters.sortedTasksWithDate(this.startDate, this.endDate).filter(task => task.user_id === this.selectedUser), ['completed', 'user_id', 'start_time'])
-      }
-    }
-  ),
+  computed: {
+    taskList () {
+      return sortBy(filter(this.sortedTasksWithDate(this.startDate, this.endDate), task => task.user_id === this.selectedUser), ['completed', 'user_id', 'start_time'])
+    },
+    ...mapGetters(['sortedTasks', 'users', 'sortedTasksWithDate'])
+  },
   data () {
     return {
       startDate: moment().day(1).hour(8).minute(0).toDate(),
@@ -84,22 +82,22 @@ export default {
       selectedUser: ''
     }
   },
-  methods: Object.assign({},
-    mapActions(['getAllTasks', 'getAllUsers', 'getAllClients']),
-    {
-      chooseDate2 (date) {
-        this.startDate = moment(date).day(1).format('YYYY-MM-DD')
-        this.endDate = moment(date).day(5).hour(18).format('YYYY-MM-DD')
-        // console.log(moment(date).day(1).hour(18).toDate())
-      }
-    }
-  ),
+  methods: {
+    chooseDate2 (date) {
+      this.startDate = moment(date).day(1).format('YYYY-MM-DD')
+      this.endDate = moment(date).day(5).hour(18).format('YYYY-MM-DD')
+      // console.log(moment(date).day(1).hour(18).toDate())
+    },
+    ...mapActions(['getAllTasks', 'getAllUsers', 'getAllClients'])
+  },
   created () {
-    this.getAllUsers().then(() => {
-      this.selectedUser = Auth.getUser().id
-    })
-    this.getAllTasks()
-    this.getAllClients()
+    return Promise.all([
+      this.getAllUsers().then(() => {
+        this.selectedUser = Auth.getUser().id
+      }),
+      this.getAllTasks(),
+      this.getAllClients()
+    ])
   }
 }
 </script>

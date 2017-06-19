@@ -8,7 +8,7 @@
       </div>
       <div class="modal-body">
         <div>
-          <form @submit.prevent='addNote'>
+          <form @submit.prevent='saveNote'>
             <div class="form-group">
               <label>Message</label>
               <textarea class="form-control" v-model='noteMessage'></textarea>
@@ -43,6 +43,7 @@ h3 {
 import ModalNote from '@/components/ModalNote'
 import ClipLoader from 'vue-spinner/src/ClipLoader'
 import { toastr } from 'Helpers'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'NoteModal',
@@ -66,21 +67,22 @@ export default {
     }
   },
   methods: {
-    addNote () {
+    saveNote () {
       this.loading = true
       const noteData = {
         entry: this.task.id,
         message: this.noteMessage
       }
 
-      this.$store.dispatch('addNote', noteData).then(() => {
+      return this.addNote(noteData).then(() => {
         this.loading = false
         this.noteMessage = ''
       }, () => {
         this.loading = false
         toastr.error('There was an error while submitting your request', 'Error')
       })
-    }
+    },
+    ...mapActions(['addNote'])
   }
 }
 </script>

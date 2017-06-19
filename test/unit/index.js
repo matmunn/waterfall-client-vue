@@ -5,6 +5,7 @@ import chaiAsPromised from 'chai-as-promised'
 chai.use(chaiAsPromised)
 
 Vue.config.productionTip = false
+Vue.config.devtools = false
 
 // require all test files (files that ends with .spec.js)
 const testsContext = require.context('./specs', true, /\.spec$/)

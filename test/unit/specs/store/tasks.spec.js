@@ -1,3 +1,4 @@
+import config from 'Config'
 import { mutations, getters, actions } from '@/store/modules/tasks'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
@@ -132,8 +133,8 @@ describe('store/modules/tasks.js', () => {
           {
             user_id: 2,
             description: 'Bar',
-            start_date: '2017-01-01 11:00:00',
-            end_date: '2017-01-01 12:00:00'
+            start_date: '2017-01-01 10:00:00',
+            end_date: '2017-01-01 11:00:00'
           },
           {
             user_id: 1,
@@ -149,14 +150,14 @@ describe('store/modules/tasks.js', () => {
       expect(result.length).to.equal(2)
       expect(result).to.eql([
         {
-          user_id: 1,
-          description: 'Foo',
+          user_id: 2,
+          description: 'Bar',
           start_date: '2017-01-01 11:00:00',
           end_date: '2017-01-01 12:00:00'
         },
         {
-          user_id: 2,
-          description: 'Bar',
+          user_id: 1,
+          description: 'Foo',
           start_date: '2017-01-01 11:00:00',
           end_date: '2017-01-01 12:00:00'
         }
@@ -164,36 +165,62 @@ describe('store/modules/tasks.js', () => {
     })
 
     it('sortedTasks', () => {
-      // const state = {
-      //   tasks: [
-      //     {
-      //       id: 1,
-      //       description: 'Item 1',
-      //       completed: false,
-      //       start_date: '2017-01-01 10:00:00'
-      //     },
-      //     {
-      //       id: 2,
-      //       description: 'Item 2',
-      //       completed: true,
-      //       start_date: '2017-01-01 12:00:00'
-      //     },
-      //     {
-      //       id: 3,
-      //       description: 'Item 3',
-      //       completed: false,
-      //       start_date: '2017-01-01 09:00:00'
-      //     },
-      //     {
-      //       id: 4,
-      //       description: 'Item 4',
-      //       completed: true,
-      //       start_date: '2017-01-01 11:00:00'
-      //     }
-      //   ]
-      // }
-      // console.log(JSON.stringify(sortBy(state.tasks, ['completed', 'start_date'])))
-      // const result = getters.sortedTasks(state)
+      const state = {
+        tasks: [
+          {
+            id: 1,
+            description: 'Item 1',
+            completed: false,
+            start_date: '2017-01-01 10:00:00'
+          },
+          {
+            id: 2,
+            description: 'Item 2',
+            completed: true,
+            start_date: '2017-01-01 12:00:00'
+          },
+          {
+            id: 3,
+            description: 'Item 3',
+            completed: false,
+            start_date: '2017-01-01 09:00:00'
+          },
+          {
+            id: 4,
+            description: 'Item 4',
+            completed: true,
+            start_date: '2017-01-01 11:00:00'
+          }
+        ]
+      }
+      const result = getters.sortedTasks(state)
+
+      expect(result).to.eql([
+        {
+          id: 3,
+          description: 'Item 3',
+          completed: false,
+          start_date: '2017-01-01 09:00:00'
+        },
+        {
+          id: 1,
+          description: 'Item 1',
+          completed: false,
+          start_date: '2017-01-01 10:00:00'
+        },
+        {
+          id: 4,
+          description: 'Item 4',
+          completed: true,
+          start_date: '2017-01-01 11:00:00'
+        },
+        {
+          id: 2,
+          description: 'Item 2',
+          completed: true,
+          start_date: '2017-01-01 12:00:00'
+        }
+      ])
     })
 
     it('userTasks', () => {
@@ -230,7 +257,7 @@ describe('store/modules/tasks.js', () => {
   describe('ACTIONS', () => {
     it('getAllTasks successfully', done => {
       const mock = new MockAdapter(axios)
-      mock.onGet('/api/tasks').reply(200, [ { id: 1, description: 'Foo' } ])
+      mock.onGet(`${config.apiHost}/api/tasks`).reply(200, [ { id: 1, description: 'Foo' } ])
 
       const commit = (type, payload) => {
         try {
@@ -251,7 +278,7 @@ describe('store/modules/tasks.js', () => {
 
     it('getAllTasks rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onGet('/api/tasks').reply(201)
+      mock.onGet(`${config.apiHost}/api/tasks`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.getAllTasks({ commit }).should.be.rejected
@@ -259,7 +286,7 @@ describe('store/modules/tasks.js', () => {
 
     it('getAllTasks rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onGet('/api/tasks').reply(404)
+      mock.onGet(`${config.apiHost}/api/tasks`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.getAllTasks({ commit }).should.be.rejected
@@ -267,7 +294,7 @@ describe('store/modules/tasks.js', () => {
 
     it('getTasksBetweenDates successfully', done => {
       const mock = new MockAdapter(axios)
-      mock.onGet('/api/tasks/2017-01-01/2017-01-03').reply(200, [ { id: 1, description: 'Foo' } ])
+      mock.onGet(`${config.apiHost}/api/tasks/2017-01-01/2017-01-03`).reply(200, [ { id: 1, description: 'Foo' } ])
 
       const commit = (type, payload) => {
         try {
@@ -288,7 +315,7 @@ describe('store/modules/tasks.js', () => {
 
     it('getTasksBetweenDates rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onGet('/api/tasks/2017-01-01/2017-01-03').reply(201)
+      mock.onGet(`${config.apiHost}/api/tasks/2017-01-01/2017-01-03`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.getTasksBetweenDates({ commit }, {start: '2017-01-01', end: '2017-01-03'}).should.be.rejected
@@ -296,7 +323,7 @@ describe('store/modules/tasks.js', () => {
 
     it('getTasksBetweenDates rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onGet('/api/tasks/2017-01-01/2017-01-03').reply(404)
+      mock.onGet(`${config.apiHost}/api/tasks/2017-01-01/2017-01-03`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.getTasksBetweenDates({ commit }, {start: '2017-01-01', end: '2017-01-03'}).should.be.rejected
@@ -304,7 +331,7 @@ describe('store/modules/tasks.js', () => {
 
     it('markTaskComplete successfully', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/task/1/complete').reply(200)
+      mock.onPatch(`${config.apiHost}/api/task/1/complete`).reply(200)
       const commit = (type, payload) => {}
 
       const result = actions.markTaskComplete({ commit }, 1)
@@ -313,7 +340,7 @@ describe('store/modules/tasks.js', () => {
 
     it('markTaskComplete rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/task/1/complete').reply(201)
+      mock.onPatch(`${config.apiHost}/api/task/1/complete`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.markTaskComplete({ commit }, 1).should.be.rejected
@@ -321,7 +348,7 @@ describe('store/modules/tasks.js', () => {
 
     it('markTaskComplete rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/task/1/complete').reply(404)
+      mock.onPatch(`${config.apiHost}/api/task/1/complete`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.markTaskComplete({ commit }, 1).should.be.rejected
@@ -329,7 +356,7 @@ describe('store/modules/tasks.js', () => {
 
     it('markTaskIncomplete successfully', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/task/1/incomplete').reply(200)
+      mock.onPatch(`${config.apiHost}/api/task/1/incomplete`).reply(200)
       const commit = (type, payload) => {}
 
       const result = actions.markTaskIncomplete({ commit }, 1)
@@ -338,7 +365,7 @@ describe('store/modules/tasks.js', () => {
 
     it('markTaskIncomplete rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/task/1/incomplete').reply(201)
+      mock.onPatch(`${config.apiHost}/api/task/1/incomplete`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.markTaskIncomplete({ commit }, 1).should.be.rejected
@@ -346,7 +373,7 @@ describe('store/modules/tasks.js', () => {
 
     it('markTaskIncomplete rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/task/1/incomplete').reply(404)
+      mock.onPatch(`${config.apiHost}/api/task/1/incomplete`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.markTaskIncomplete({ commit }, 1).should.be.rejected
@@ -354,7 +381,7 @@ describe('store/modules/tasks.js', () => {
 
     it('addTask successfully', () => {
       const mock = new MockAdapter(axios)
-      mock.onPost('/api/task').reply(201)
+      mock.onPost(`${config.apiHost}/api/task`).reply(201)
       const commit = (type, payload) => {}
 
       const result = actions.addTask({ commit }, { id: 1 })
@@ -363,7 +390,7 @@ describe('store/modules/tasks.js', () => {
 
     it('addTask rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onPost('/api/task').reply(200)
+      mock.onPost(`${config.apiHost}/api/task`).reply(200)
       const commit = (type, payload) => {}
 
       return actions.addTask({ commit }, { id: 1 }).should.be.rejected
@@ -371,7 +398,7 @@ describe('store/modules/tasks.js', () => {
 
     it('addTask rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onPost('/api/task').reply(404)
+      mock.onPost(`${config.apiHost}/api/task`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.addTask({ commit }, { id: 1 }).should.be.rejected
@@ -379,7 +406,7 @@ describe('store/modules/tasks.js', () => {
 
     it('editTask successfully', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/task/1').reply(200)
+      mock.onPatch(`${config.apiHost}/api/task/1`).reply(200)
       const commit = (type, payload) => {}
 
       const result = actions.editTask({ commit }, { id: 1 })
@@ -388,7 +415,7 @@ describe('store/modules/tasks.js', () => {
 
     it('editTask rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/task/1').reply(201)
+      mock.onPatch(`${config.apiHost}/api/task/1`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.editTask({ commit }, { id: 1 }).should.be.rejected
@@ -396,7 +423,7 @@ describe('store/modules/tasks.js', () => {
 
     it('editTask rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/task/1').reply(404)
+      mock.onPatch(`${config.apiHost}/api/task/1`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.editTask({ commit }, { id: 1 }).should.be.rejected
@@ -404,7 +431,7 @@ describe('store/modules/tasks.js', () => {
 
     it('deleteTask successfully', () => {
       const mock = new MockAdapter(axios)
-      mock.onDelete('/api/task/1').reply(200)
+      mock.onDelete(`${config.apiHost}/api/task/1`).reply(200)
       const commit = (type, payload) => {}
 
       const result = actions.deleteTask({ commit }, 1)
@@ -413,7 +440,7 @@ describe('store/modules/tasks.js', () => {
 
     it('deleteTask rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onDelete('/api/task/1').reply(201)
+      mock.onDelete(`${config.apiHost}/api/task/1`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.deleteTask({ commit }, 1).should.be.rejected
@@ -421,7 +448,7 @@ describe('store/modules/tasks.js', () => {
 
     it('deleteTask rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onDelete('/api/task/1').reply(404)
+      mock.onDelete(`${config.apiHost}/api/task/1`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.deleteTask({ commit }, 1).should.be.rejected

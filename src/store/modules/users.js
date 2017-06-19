@@ -1,3 +1,4 @@
+import config from 'Config'
 import axios from 'axios'
 import { SET_USERS, ADD_USER, UPDATE_USER, DELETE_USER } from '@/store/mutations'
 import { findIndex, find, filter } from 'lodash'
@@ -5,7 +6,7 @@ import { findIndex, find, filter } from 'lodash'
 export const actions = {
   getAllUsers ({ commit }) {
     return new Promise((resolve, reject) => {
-      axios.get(`/api/users`).then(response => {
+      axios.get(`${config.apiHost}/api/users`).then(response => {
         if (response.status === 200) {
           commit(SET_USERS, response.data)
           resolve(true)
@@ -18,7 +19,7 @@ export const actions = {
   },
   addUser ({ commit }, userData) {
     return new Promise((resolve, reject) => {
-      axios.post(`/api/user`, userData).then(response => {
+      axios.post(`${config.apiHost}/api/user`, userData).then(response => {
         if (response.status === 201) {
           resolve(true)
         }
@@ -30,7 +31,7 @@ export const actions = {
   },
   editUser ({ commit }, userData) {
     return new Promise((resolve, reject) => {
-      axios.patch(`/api/user/${userData.id}`, userData).then(response => {
+      axios.patch(`${config.apiHost}/api/user/${userData.id}`, userData).then(response => {
         if (response.status === 200) {
           resolve(true)
         }
@@ -42,7 +43,7 @@ export const actions = {
   },
   deleteUser ({ commit }, userId) {
     return new Promise((resolve, reject) => {
-      axios.delete(`/api/user/${userId}`).then(response => {
+      axios.delete(`${config.apiHost}/api/user/${userId}`).then(response => {
         if (response.status === 200) {
           resolve(true)
         }

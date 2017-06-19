@@ -10,16 +10,11 @@
 
 <script>
 import TaskForm from '@/components/TaskForm'
-import { mapActions } from 'vuex'
 
 export default {
   name: 'TaskEditRoute',
   components: {
     TaskForm
-  },
-  methods: mapActions(['getAllTasks']),
-  created () {
-    this.getAllTasks()
   }
 }
 </script>

@@ -1,4 +1,5 @@
 import { isLoggedIn, attemptLogin, logout, getUser, getToken, expireInvalidLogins } from '@/helpers/authentication'
+import config from 'Config'
 import store from '@/store'
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
@@ -54,7 +55,7 @@ describe('helpers/authentication.js', function () {
       })
     )
     const mock = new MockAdapter(axios)
-    mock.onPost('/api/login').reply(200, { id: 1, name: 'Foo User' })
+    mock.onPost(`${config.apiHost}/api/login`).reply(200, { id: 1, name: 'Foo User' })
 
     expect(store.state.auth.loginStatus).to.equal(false)
     expect(store.state.auth.user).to.eql({})
@@ -138,7 +139,7 @@ describe('helpers/authentication.js', function () {
       })
     )
 
-    localStorage.setItem('loginExpires', moment().subtract(25, 'hours'))
+    localStorage.setItem('loginExpires', moment().subtract(25, 'hours').toISOString())
 
     expireInvalidLogins()
 
@@ -158,7 +159,7 @@ describe('helpers/authentication.js', function () {
       })
     )
 
-    localStorage.setItem('loginExpires', moment().add(25, 'hours'))
+    localStorage.setItem('loginExpires', moment().add(25, 'hours').toISOString())
 
     expireInvalidLogins()
 

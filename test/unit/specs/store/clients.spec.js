@@ -1,3 +1,4 @@
+import config from 'Config'
 import { mutations, getters, actions } from '@/store/modules/clients'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
@@ -86,10 +87,10 @@ describe('store/modules/clients.js', () => {
     })
   })
 
-  describe('ACTIONS', done => {
-    it('getAllClients successfully', () => {
+  describe('ACTIONS', () => {
+    it('getAllClients successfully', done => {
       const mock = new MockAdapter(axios)
-      mock.onGet('/api/clients').reply(200, [{ id: 1, name: 'Foo' }])
+      mock.onGet(`${config.apiHost}/api/clients`).reply(200, [{ id: 1, name: 'Foo' }])
       const commit = (type, payload) => {
         try {
           expect(type).to.equal('SET_CLIENTS')
@@ -109,7 +110,7 @@ describe('store/modules/clients.js', () => {
 
     it('getAllClients rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onGet('/api/clients').reply(201)
+      mock.onGet(`${config.apiHost}/api/clients`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.getAllClients({ commit }).should.be.rejected
@@ -117,7 +118,7 @@ describe('store/modules/clients.js', () => {
 
     it('getAllClients rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onGet('/api/clients').reply(404)
+      mock.onGet(`${config.apiHost}/api/clients`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.getAllClients({ commit }).should.be.rejected
@@ -125,7 +126,7 @@ describe('store/modules/clients.js', () => {
 
     it('addClient successfully', () => {
       const mock = new MockAdapter(axios)
-      mock.onPost('/api/client').reply(201)
+      mock.onPost(`${config.apiHost}/api/client`).reply(201)
       const commit = (type, payload) => {}
 
       const result = actions.addClient({ commit }, { name: 'Foo' })
@@ -134,7 +135,7 @@ describe('store/modules/clients.js', () => {
 
     it('addClient rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onPost('/api/client').reply(200)
+      mock.onPost(`${config.apiHost}/api/client`).reply(200)
       const commit = (type, payload) => {}
 
       return actions.addClient({ commit }, { name: 'Foo' }).should.be.rejected
@@ -142,7 +143,7 @@ describe('store/modules/clients.js', () => {
 
     it('addClient rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onPost('/api/client').reply(404)
+      mock.onPost(`${config.apiHost}/api/client`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.addClient({ commit }, { name: 'Foo' }).should.be.rejected
@@ -150,7 +151,7 @@ describe('store/modules/clients.js', () => {
 
     it('editClient successfully', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/client/1').reply(200)
+      mock.onPatch(`${config.apiHost}/api/client/1`).reply(200)
       const commit = (type, payload) => {}
 
       const result = actions.editClient({ commit }, { id: 1, name: 'Foo' })
@@ -159,7 +160,7 @@ describe('store/modules/clients.js', () => {
 
     it('editClient rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/client/1').reply(201)
+      mock.onPatch(`${config.apiHost}/api/client/1`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.editClient({ commit }, { id: 1, name: 'Foo' }).should.be.rejected
@@ -167,7 +168,7 @@ describe('store/modules/clients.js', () => {
 
     it('editClient rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/client/1').reply(404)
+      mock.onPatch(`${config.apiHost}/api/client/1`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.editClient({ commit }, { id: 1, name: 'Foo' }).should.be.rejected
@@ -175,7 +176,7 @@ describe('store/modules/clients.js', () => {
 
     it('deleteClient successfully', () => {
       const mock = new MockAdapter(axios)
-      mock.onDelete('/api/client/1').reply(200)
+      mock.onDelete(`${config.apiHost}/api/client/1`).reply(200)
       const commit = (type, payload) => {}
 
       const result = actions.deleteClient({ commit }, 1)
@@ -184,7 +185,7 @@ describe('store/modules/clients.js', () => {
 
     it('deleteClient rejects on unexpected HTTP status code', () => {
       const mock = new MockAdapter(axios)
-      mock.onDelete('/api/client/1').reply(201)
+      mock.onDelete(`${config.apiHost}/api/client/1`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.deleteClient({ commit }, 1).should.be.rejected
@@ -192,7 +193,7 @@ describe('store/modules/clients.js', () => {
 
     it('deleteClient rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onDelete('/api/client/1').reply(404)
+      mock.onDelete(`${config.apiHost}/api/client/1`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.deleteClient({ commit }, 1).should.be.rejected

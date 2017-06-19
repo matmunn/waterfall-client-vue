@@ -1,3 +1,4 @@
+import config from 'Config'
 import { SET_NOTES, ADD_NOTE, UPDATE_NOTE, DELETE_NOTE } from '@/store/mutations'
 import { findIndex, filter } from 'lodash'
 import axios from 'axios'
@@ -5,7 +6,7 @@ import axios from 'axios'
 export const actions = {
   getAllNotes ({ commit }) {
     return new Promise((resolve, reject) => {
-      axios.get('/api/notes').then(response => {
+      axios.get(`${config.apiHost}/api/notes`).then(response => {
         if (response.status === 200) {
           commit(SET_NOTES, response.data)
           resolve(response.data.length)
@@ -18,7 +19,7 @@ export const actions = {
   },
   addNote ({ commit }, noteData) {
     return new Promise((resolve, reject) => {
-      axios.post(`/api/note`, noteData).then(response => {
+      axios.post(`${config.apiHost}/api/note`, noteData).then(response => {
         if (response.status === 201) {
           resolve(true)
         }
@@ -30,7 +31,7 @@ export const actions = {
   },
   editNote ({ commit }, noteData) {
     return new Promise((resolve, reject) => {
-      axios.patch(`/api/note/${noteData.id}`, noteData).then(response => {
+      axios.patch(`${config.apiHost}/api/note/${noteData.id}`, noteData).then(response => {
         if (response.status === 200) {
           resolve(true)
         }
@@ -42,7 +43,7 @@ export const actions = {
   },
   deleteNote ({ commit }, noteId) {
     return new Promise((resolve, reject) => {
-      axios.delete(`/api/note/${noteId}`).then(response => {
+      axios.delete(`${config.apiHost}/api/note/${noteId}`).then(response => {
         if (response.status === 200) {
           resolve(true)
         }

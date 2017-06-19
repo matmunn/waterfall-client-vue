@@ -185,7 +185,9 @@ router.beforeEach((to, from, next) => {
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !Auth.isLoggedIn()) {
-    router.app.$store.commit(SET_NEXT_ROUTE, to)
+    if (router.app.$store) {
+      router.app.$store.commit(SET_NEXT_ROUTE, to)
+    }
     next('/login')
   } else {
     next()

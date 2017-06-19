@@ -1,28 +1,30 @@
 <template>
-  <tr :class="classes">
-    <td :title='title'>
-      {{ getClient(this.task.client_id).name }}
-    </td>
-    <td :title='title' class='job-description'>
-      {{ this.task.description }}
-    </td>
-    <td>
-      {{ this.task.blocks.length }}h
-    </td>
-    <td class="check-mark">
-      <i class="fa fa-check" v-if="!task.completed" @click="markCompleted"></i>
-      <i class="fa fa-times" v-else @click="markIncomplete"></i>
-      <i class="fa fa-comment-o" data-toggle="modal" :data-target='"#modal" + this.task.id'></i>
-      ({{ this.notes.length }})
-    </td>
-    <!-- Vue ranges are 1 indexed while our blocks are 0 indexed, need to subtract 1 to compensate -->
-    <td v-for="x in 35">
-      <div :class='fillClasses' v-if="shadeCell(x - 1)" :style="backgroundColor">
-        <i class="fa fa-square fa-lg"></i>
-      </div>
-    </td>
-    <NoteModal :notes='this.notes' :task='this.task' />
-  </tr>
+<tr :class="classes">
+  <td :title='title'>
+    {{ getClient(this.task.client_id).name }}
+  </td>
+  <td :title='title' class='job-description'>
+    {{ this.task.description }}
+  </td>
+  <td>
+    {{ this.task.blocks.length }}h
+  </td>
+  <td class="check-mark">
+    <i class="fa fa-check" v-if="!task.completed" @click="markCompleted"></i>
+    <!-- <i class="material-icons" v-if="!task.completed" @click="markCompleted">done</i> -->
+    <i class="fa fa-times" v-else @click="markIncomplete"></i>
+    <!-- <i class="material-icons" v-else @click="markIncomplete">clear</i> -->
+    <i class="fa fa-comment-o" data-toggle="modal" :data-target='"#modal" + this.task.id'></i>
+    ({{ this.notes.length }})
+  </td>
+  <!-- Vue ranges are 1 indexed while our blocks are 0 indexed, need to subtract 1 to compensate -->
+  <td v-for="x in 35">
+    <div :class='fillClasses' v-if="shadeCell(x - 1)" :style="backgroundColor">
+      <i class="fa fa-square fa-lg"></i>
+    </div>
+  </td>
+  <NoteModal :notes='this.notes' :task='this.task' />
+</tr>
 </template>
 
 <style scoped lang="scss">
@@ -106,6 +108,7 @@ td:nth-of-type(7n+4) {
 import moment from 'moment'
 import { getUser, getClient, getNotes } from 'Helpers'
 import NoteModal from './NoteModal'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'Task',
@@ -115,16 +118,17 @@ export default {
   },
   methods: {
     markCompleted () {
-      this.$store.dispatch('markTaskComplete', this.task.id)
+      this.markTaskComplete(this.task.id)
     },
     markIncomplete () {
-      this.$store.dispatch('markTaskIncomplete', this.task.id)
+      this.markTaskIncomplete(this.task.id)
     },
     shadeCell (cell) {
       return this.task.blocks.indexOf(cell) > -1
     },
     getClient,
-    getUser
+    getUser,
+    ...mapActions(['markTaskComplete', 'markTaskIncomplete'])
   },
   computed: {
     classes () {

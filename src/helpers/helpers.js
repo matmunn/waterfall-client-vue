@@ -1,10 +1,12 @@
 import store from '@/store'
-import toastr from 'toastr'
+import toastrModule from 'toastr'
 import swal from 'sweetalert2'
 
-toastr.options.closeButton = false
-toastr.options.timeOut = 2500
-toastr.options.extendedTimeOut = 5000
+toastrModule.options.closeButton = false
+toastrModule.options.timeOut = 2500
+toastrModule.options.extendedTimeOut = 5000
+
+export const toastr = toastrModule
 
 export const getCategory = categoryId => {
   return store.getters.category(categoryId) || {}

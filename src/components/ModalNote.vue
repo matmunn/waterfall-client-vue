@@ -29,8 +29,8 @@
       </p>
     </div>
     <div class="col-md-2 text-right">
-      <i class="fa fa-lg fa-edit" @click='editNote'></i>
-      <i class="fa fa-lg fa-trash-o" @click='deleteNote'></i>
+      <i class="fa fa-lg fa-edit" @click='enableEdit'></i>
+      <i class="fa fa-lg fa-trash-o" @click='toggleDeleteMode'></i>
     </div>
     <div class="clearfix"></div>
   </div>
@@ -47,6 +47,10 @@
 <script>
 import ClipLoader from 'vue-spinner/src/ClipLoader'
 import moment from 'moment'
+import helpers from 'Helpers'
+import { mapActions } from 'vuex'
+
+const { getUser } = helpers
 
 export default {
   name: 'ModalNote',
@@ -72,9 +76,9 @@ export default {
   },
   methods: {
     getUserName () {
-      return this.$store.getters.user(this.note.created_by).name || 'Unknown'
+      return getUser(this.note.created_by).name || 'Unknown'
     },
-    editNote () {
+    enableEdit () {
       this.editing = true
     },
     saveNote () {
@@ -85,24 +89,34 @@ export default {
         id: this.note.id
       }
 
-      this.$store.dispatch('editNote', noteData).then(() => {
+      return this.editNote(noteData).then(() => {
         this.editing = false
         this.editLoading = false
+      }, () => {
+        this.cancelEdit()
+        this.editLoading = false
+
+        helpers.toastr.error(`There was an error updating the note.`, 'Error')
       })
     },
-    deleteNote () {
+    toggleDeleteMode () {
       this.pendingDelete = !this.pendingDelete
     },
     confirmDeleteNote () {
       this.deleteLoading = true
-      this.$store.dispatch('deleteNote', this.note.id).then(() => {
+
+      return this.deleteNote(this.note.id).then(() => {
         this.deleteLoading = false
+      }, () => {
+        this.deleteLoading = false
+        helpers.toastr.error(`There was an error deleting the note.`, 'Error')
       })
     },
     cancelEdit () {
       this.noteMessage = this.note.message
       this.editing = false
-    }
+    },
+    ...mapActions(['editNote', 'deleteNote'])
   }
 }
 </script>

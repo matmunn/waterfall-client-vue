@@ -1,3 +1,4 @@
+import config from 'Config'
 import { mutations, getters, actions } from '@/store/modules/auth'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
@@ -56,7 +57,7 @@ describe('store/modules/auth.js', () => {
 
       const payload = { id: 1, name: 'Foo Bar' }
 
-      mock.onPost(`/api/login`).reply(200, payload)
+      mock.onPost(`${config.apiHost}/api/login`).reply(200, payload)
 
       const commit = (type, payload) => {
         try {
@@ -77,7 +78,7 @@ describe('store/modules/auth.js', () => {
 
     it('attemptLogin rejects on unexpected HTTP status code', () => {
       const mock = new MockAdapter(axios)
-      mock.onPost('/api/login').reply(201)
+      mock.onPost(`${config.apiHost}/api/login`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.attemptLogin({ commit }).should.be.rejected
@@ -85,7 +86,7 @@ describe('store/modules/auth.js', () => {
 
     it('attemptLogin rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onPost('/api/login').reply(404)
+      mock.onPost(`${config.apiHost}/api/login`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.attemptLogin({ commit }).should.be.rejected

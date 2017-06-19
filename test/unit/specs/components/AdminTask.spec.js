@@ -1,9 +1,10 @@
-import Vue from 'vue'
 import AdminTask from '@/components/AdminTask'
 import helpers from 'Helpers'
-import { getRenderedText } from '../../helpers'
+import store from '@/store'
+import router from '@/router'
+import { mount } from 'avoriaz'
 
-const testTask = {
+const testData = {
   task: {
     id: 1,
     user_id: 1,
@@ -16,49 +17,47 @@ const testTask = {
   }
 }
 
-describe('AdminTask.vue', () => {
+describe('components/AdminTask.vue', () => {
   it('should render correct contents', () => {
-    expect(getRenderedText(AdminTask, testTask))
-      .to.include('Bar Task')
+    const wrapper = mount(AdminTask, { store, router, propsData: testData })
+
+    expect(wrapper.text()).to.include('Bar Task')
   })
 
   it('should compute values correctly', () => {
-    const Ctor = Vue.extend(AdminTask)
-    const vm = new Ctor({ propsData: testTask }).$mount()
+    const wrapper = mount(AdminTask, { store, router, propsData: testData })
 
-    expect(vm.deleteLink).to.equal(`/admin/tasks/1/delete`)
-    expect(vm.editLink).to.equal(`/admin/tasks/1/edit`)
+    expect(wrapper.vm.deleteLink).to.equal(`/admin/tasks/1/delete`)
+    expect(wrapper.vm.editLink).to.equal(`/admin/tasks/1/edit`)
+    expect(wrapper.vm.completedClass).to.equal('fa-check')
 
-    expect(vm.completedClass).to.equal('fa-check')
+    testData.task.completed = false
+    wrapper.setProps(testData)
 
-    const Ctor2 = Vue.extend(AdminTask)
-    testTask.task.completed = false
-    const vm2 = new Ctor2({ propsData: testTask }).$mount()
-
-    expect(vm2.completedClass).to.equal('fa-times')
+    expect(wrapper.vm.completedClass).to.equal('fa-times')
   })
 
-  it('deleteTask should work as expected', function () {
+  it('confirmDelete should work as expected', function () {
     const swalStub = sinon.stub(helpers, 'swal').resolves()
 
-    const Ctor = Vue.extend(AdminTask)
-    const vm = new Ctor({ propsData: testTask }).$mount()
+    const wrapper = mount(AdminTask, { store, router, propsData: testData })
 
-    const dispatchDeleteStub = sinon.stub(vm, 'dispatchDelete').returns(true)
+    const dispatchDeleteStub = sinon.spy(wrapper.vm, 'deleteTask')
 
-    return vm.deleteTask().then(() => {
+    return wrapper.vm.confirmDelete().then(() => {
       expect(swalStub.called).to.equal(true)
       expect(dispatchDeleteStub.called).to.equal(true)
+      expect(dispatchDeleteStub.calledWith(1)).to.equal(true)
       swalStub.restore()
     })
   })
 
-  it('deleteTask does nothing on cancel', () => {
+  it('confirmDelete does nothing on cancel', () => {
     const stub = sinon.stub(helpers, 'swal').rejects()
-    const Ctor = Vue.extend(AdminTask)
-    const vm = new Ctor({ propsData: testTask }).$mount()
 
-    vm.deleteTask()
+    const wrapper = mount(AdminTask, { store, router, propsData: testData })
+
+    wrapper.vm.confirmDelete()
 
     expect(stub.called).to.equal(true)
 

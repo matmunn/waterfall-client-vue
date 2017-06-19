@@ -21,7 +21,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ClipLoader from 'vue-spinner/src/ClipLoader'
-import { toastr } from 'Helpers'
+import helpers from 'Helpers'
 
 export default {
   name: 'ClientForm',
@@ -29,39 +29,36 @@ export default {
   components: {
     ClipLoader
   },
-  methods: Object.assign({},
-    mapActions(['getAllUsers']),
-    {
-      saveClient () {
-        this.loading = true
+  methods: {
+    saveClient () {
+      this.loading = true
 
-        const clientData = {
-          name: this.clientName,
-          accountManager: this.clientAccountManager
-        }
-
-        let action = 'addClient'
-        if (this.editing) {
-          clientData.id = this.editingClient.id
-          action = 'editClient'
-        }
-
-        this.$store.dispatch(action, clientData).then(response => {
-          this.loading = false
-          if (response === true) {
-            this.$router.push('/admin/clients')
-          }
-        }, () => {
-          this.loading = false
-
-          toastr.error(`An error occurred while processing your request`, 'Error')
-        })
+      const clientData = {
+        name: this.clientName,
+        accountManager: this.clientAccountManager
       }
-    }
-  ),
+
+      let action = this.addClient
+      if (this.editing) {
+        clientData.id = this.editingClient.id
+        action = this.editClient
+      }
+
+      return action(clientData).then(() => {
+        this.loading = false
+
+        this.$router.push('/admin/clients')
+      }, () => {
+        this.loading = false
+
+        helpers.toastr.error(`An error occurred while processing your request`, 'Error')
+      })
+    },
+    ...mapActions(['getAllUsers', 'addClient', 'editClient'])
+  },
   data () {
     return {
-      editingClient: this.$store.getters.client(this.client),
+      editingClient: helpers.getClient(this.client),
       clientName: '',
       clientAccountManager: '',
       loading: false

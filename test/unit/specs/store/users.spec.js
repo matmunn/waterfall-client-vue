@@ -1,3 +1,4 @@
+import config from 'Config'
 import { mutations, getters, actions } from '@/store/modules/users'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
@@ -94,7 +95,7 @@ describe('store/modules/users.js', () => {
   describe('ACTIONS', () => {
     it('getAllUsers successfully', done => {
       const mock = new MockAdapter(axios)
-      mock.onGet('/api/users').reply(200, [{ id: 1, name: 'Foo' }])
+      mock.onGet(`${config.apiHost}/api/users`).reply(200, [{ id: 1, name: 'Foo' }])
       const commit = (type, payload) => {
         try {
           expect(type).to.equal('SET_USERS')
@@ -113,7 +114,7 @@ describe('store/modules/users.js', () => {
 
     it('getAllUsers rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onGet('/api/users').reply(201)
+      mock.onGet(`${config.apiHost}/api/users`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.getAllUsers({ commit }).should.be.rejected
@@ -121,7 +122,7 @@ describe('store/modules/users.js', () => {
 
     it('getAllUsers rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onGet('/api/users').reply(404)
+      mock.onGet(`${config.apiHost}/api/users`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.getAllUsers({ commit }).should.be.rejected
@@ -129,7 +130,7 @@ describe('store/modules/users.js', () => {
 
     it('addUser successfully', () => {
       const mock = new MockAdapter(axios)
-      mock.onPost('/api/user').reply(201)
+      mock.onPost(`${config.apiHost}/api/user`).reply(201)
       const commit = (type, payload) => {}
 
       const result = actions.addUser({ commit }, { name: 'Foo' })
@@ -138,7 +139,7 @@ describe('store/modules/users.js', () => {
 
     it('addUser rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onPost('/api/user').reply(200)
+      mock.onPost(`${config.apiHost}/api/user`).reply(200)
       const commit = (type, payload) => {}
 
       return actions.addUser({ commit }, { name: 'Foo' }).should.be.rejected
@@ -146,7 +147,7 @@ describe('store/modules/users.js', () => {
 
     it('addUser rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onPost('/api/user').reply(404)
+      mock.onPost(`${config.apiHost}/api/user`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.addUser({ commit }, { name: 'Foo' }).should.be.rejected
@@ -154,7 +155,7 @@ describe('store/modules/users.js', () => {
 
     it('editUser successfully', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/user/1').reply(200)
+      mock.onPatch(`${config.apiHost}/api/user/1`).reply(200)
       const commit = (type, payload) => {}
 
       const result = actions.editUser({ commit }, { id: 1, name: 'Foo' })
@@ -163,7 +164,7 @@ describe('store/modules/users.js', () => {
 
     it('editUser rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/user/1').reply(201)
+      mock.onPatch(`${config.apiHost}/api/user/1`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.editUser({ commit }, { id: 1, name: 'Foo' }).should.be.rejected
@@ -171,7 +172,7 @@ describe('store/modules/users.js', () => {
 
     it('editUser rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/user/1').reply(404)
+      mock.onPatch(`${config.apiHost}/api/user/1`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.editUser({ commit }, { id: 1, name: 'Foo' }).should.be.rejected
@@ -179,7 +180,7 @@ describe('store/modules/users.js', () => {
 
     it('deleteUser successfully', () => {
       const mock = new MockAdapter(axios)
-      mock.onDelete('/api/user/1').reply(200)
+      mock.onDelete(`${config.apiHost}/api/user/1`).reply(200)
       const commit = (type, payload) => {}
 
       const result = actions.deleteUser({ commit }, 1)
@@ -188,7 +189,7 @@ describe('store/modules/users.js', () => {
 
     it('deleteUser rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onDelete('/api/user/1').reply(201)
+      mock.onDelete(`${config.apiHost}/api/user/1`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.deleteUser({ commit }, 1).should.be.rejected
@@ -196,7 +197,7 @@ describe('store/modules/users.js', () => {
 
     it('deleteUser rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onDelete('/api/user/1').reply(404)
+      mock.onDelete(`${config.apiHost}/api/user/1`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.deleteUser({ commit }, 1).should.be.rejected

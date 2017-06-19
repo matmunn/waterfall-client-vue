@@ -10,7 +10,7 @@
         </th>
         <th></th>
       </tr>
-      <AdminCategory v-for="c in categories" :category="c" :key="c.id" />
+      <AdminCategory v-for="category in categories" :category="category" :key="category.id" />
     </table>
   </div>
 </template>

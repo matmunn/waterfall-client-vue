@@ -1,3 +1,4 @@
+import config from 'Config'
 import axios from 'axios'
 import { SET_CATEGORIES, ADD_CATEGORY, UPDATE_CATEGORY, DELETE_CATEGORY } from '@/store/mutations'
 import { find, findIndex, filter } from 'lodash'
@@ -5,7 +6,7 @@ import { find, findIndex, filter } from 'lodash'
 export const actions = {
   getAllCategories ({ commit }) {
     return new Promise((resolve, reject) => {
-      axios.get('/api/categories').then(response => {
+      axios.get(`${config.apiHost}/api/categories`).then(response => {
         if (response.status === 200) {
           commit(SET_CATEGORIES, response.data)
           resolve(true)
@@ -18,7 +19,7 @@ export const actions = {
   },
   addCategory ({ commit }, categoryData) {
     return new Promise((resolve, reject) => {
-      axios.post(`/api/category`, categoryData).then(response => {
+      axios.post(`${config.apiHost}/api/category`, categoryData).then(response => {
         if (response.status === 201) {
           resolve(true)
         }
@@ -30,7 +31,7 @@ export const actions = {
   },
   editCategory ({ commit }, categoryData) {
     return new Promise((resolve, reject) => {
-      axios.patch(`/api/category/${categoryData.id}`, categoryData).then(response => {
+      axios.patch(`${config.apiHost}/api/category/${categoryData.id}`, categoryData).then(response => {
         if (response.status === 200) {
           resolve(true)
         }
@@ -42,7 +43,7 @@ export const actions = {
   },
   deleteCategory ({ commit }, categoryId) {
     return new Promise((resolve, reject) => {
-      axios.delete(`/api/category/${categoryId}`).then(response => {
+      axios.delete(`${config.apiHost}/api/category/${categoryId}`).then(response => {
         if (response.status === 200) {
           resolve(true)
         }

@@ -1,3 +1,4 @@
+import config from 'Config'
 import axios from 'axios'
 import moment from 'moment'
 import { LOGIN, LOGOUT } from '@/store/mutations'
@@ -5,7 +6,7 @@ import { LOGIN, LOGOUT } from '@/store/mutations'
 export const actions = {
   attemptLogin ({ commit }, userData) {
     return new Promise((resolve, reject) => {
-      axios.post(`/api/login`, userData).then(response => {
+      axios.post(`${config.apiHost}/api/login`, userData).then(response => {
         if (response.status === 200) {
           commit(LOGIN, response.data)
           localStorage.setItem('user', JSON.stringify(response.data))

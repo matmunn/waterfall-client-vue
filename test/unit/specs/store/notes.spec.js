@@ -1,3 +1,4 @@
+import config from 'Config'
 import { mutations, getters, actions } from '@/store/modules/notes'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
@@ -79,7 +80,7 @@ describe('store/modules/notes.js', () => {
   describe('ACTIONS', () => {
     it('getAllNotes successfully', done => {
       const mock = new MockAdapter(axios)
-      mock.onGet('/api/notes').reply(200, [{ id: 1, description: 'Foo', entry_id: 1 }])
+      mock.onGet(`${config.apiHost}/api/notes`).reply(200, [{ id: 1, description: 'Foo', entry_id: 1 }])
       const commit = (type, payload) => {
         try {
           expect(type).to.equal('SET_NOTES')
@@ -98,7 +99,7 @@ describe('store/modules/notes.js', () => {
 
     it('getAllNotes rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onGet('/api/notes').reply(201)
+      mock.onGet(`${config.apiHost}/api/notes`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.getAllNotes({ commit }).should.be.rejected
@@ -106,7 +107,7 @@ describe('store/modules/notes.js', () => {
 
     it('getAllNotes rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onGet('/api/notes').reply(404)
+      mock.onGet(`${config.apiHost}/api/notes`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.getAllNotes({ commit }).should.be.rejected
@@ -114,7 +115,7 @@ describe('store/modules/notes.js', () => {
 
     it('addNote successfully', () => {
       const mock = new MockAdapter(axios)
-      mock.onPost('/api/note').reply(201)
+      mock.onPost(`${config.apiHost}/api/note`).reply(201)
       const commit = (type, payload) => {}
 
       const result = actions.addNote({ commit }, { description: 'Foo' })
@@ -123,7 +124,7 @@ describe('store/modules/notes.js', () => {
 
     it('addNote rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onPost('/api/note').reply(200)
+      mock.onPost(`${config.apiHost}/api/note`).reply(200)
       const commit = (type, payload) => {}
 
       return actions.addNote({ commit }, { description: 'Foo' }).should.be.rejected
@@ -131,7 +132,7 @@ describe('store/modules/notes.js', () => {
 
     it('addNote rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onPost('/api/note').reply(404)
+      mock.onPost(`${config.apiHost}/api/note`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.addNote({ commit }, { description: 'Foo' }).should.be.rejected
@@ -139,7 +140,7 @@ describe('store/modules/notes.js', () => {
 
     it('editNote successfully', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/note/1').reply(200)
+      mock.onPatch(`${config.apiHost}/api/note/1`).reply(200)
       const commit = (type, payload) => {}
 
       const result = actions.editNote({ commit }, { id: 1, description: 'Foo' })
@@ -148,7 +149,7 @@ describe('store/modules/notes.js', () => {
 
     it('editNote rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/note/1').reply(201)
+      mock.onPatch(`${config.apiHost}/api/note/1`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.editNote({ commit }, { id: 1, description: 'Foo' }).should.be.rejected
@@ -156,7 +157,7 @@ describe('store/modules/notes.js', () => {
 
     it('editNote rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/note/1').reply(404)
+      mock.onPatch(`${config.apiHost}/api/note/1`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.editNote({ commit }, { id: 1, description: 'Foo' }).should.be.rejected
@@ -164,7 +165,7 @@ describe('store/modules/notes.js', () => {
 
     it('deleteNote successfully', () => {
       const mock = new MockAdapter(axios)
-      mock.onDelete('/api/note/1').reply(200)
+      mock.onDelete(`${config.apiHost}/api/note/1`).reply(200)
       const commit = (type, payload) => {}
 
       const result = actions.deleteNote({ commit }, 1)
@@ -173,7 +174,7 @@ describe('store/modules/notes.js', () => {
 
     it('deleteNote rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onDelete('/api/note/1').reply(201)
+      mock.onDelete(`${config.apiHost}/api/note/1`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.deleteNote({ commit }, 1).should.be.rejected
@@ -181,7 +182,7 @@ describe('store/modules/notes.js', () => {
 
     it('deleteNote rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onDelete('/api/note/1').reply(404)
+      mock.onDelete(`${config.apiHost}/api/note/1`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.deleteNote({ commit }, 1).should.be.rejected

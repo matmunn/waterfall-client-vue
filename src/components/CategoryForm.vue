@@ -23,7 +23,8 @@
 
 <script>
 import ClipLoader from 'vue-spinner/src/ClipLoader'
-import { toastr, getCategory } from 'Helpers'
+import helpers from 'Helpers'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'CategoryForm',
@@ -49,28 +50,27 @@ export default {
         visible: this.visible
       }
 
-      let action = 'addCategory'
+      let action = this.addCategory
       if (this.editing) {
         categoryData.id = this.category
-        action = 'editCategory'
+        action = this.editCategory
       }
 
-      this.$store.dispatch(action, categoryData).then(response => {
+      return action(categoryData).then(() => {
         this.loading = false
 
-        if (response === true) {
-          this.$router.push('/admin/categories')
-        }
+        this.$router.push('/admin/categories')
       }, () => {
         this.loading = false
 
-        toastr.error(`An error occurred while processing your request`, 'Error')
+        helpers.toastr.error(`An error occurred while processing your request`, 'Error')
       })
-    }
+    },
+    ...mapActions(['addCategory', 'editCategory'])
   },
   created () {
     if (this.editing) {
-      const editingCategory = getCategory(this.category)
+      const editingCategory = helpers.getCategory(this.category)
       this.description = editingCategory.description
       this.color = editingCategory.hex_color
       this.visible = editingCategory.display_in_list

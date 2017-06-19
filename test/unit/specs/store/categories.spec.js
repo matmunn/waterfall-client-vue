@@ -1,3 +1,4 @@
+import config from 'Config'
 import { mutations, getters, actions } from '@/store/modules/categories'
 import MockAdapter from 'axios-mock-adapter'
 import axios from 'axios'
@@ -88,7 +89,7 @@ describe('store/modules/categories.js', () => {
   describe('ACTIONS', () => {
     it('getAllCategories successfully', done => {
       const mock = new MockAdapter(axios)
-      mock.onGet('/api/categories').reply(200, [{ id: 1, description: 'Foo Category' }])
+      mock.onGet(`${config.apiHost}/api/categories`).reply(200, [{ id: 1, description: 'Foo Category' }])
       const commit = (type, payload) => {
         try {
           expect(type).to.equal('SET_CATEGORIES')
@@ -105,7 +106,7 @@ describe('store/modules/categories.js', () => {
 
     it('getAllCategories rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onGet('/api/categories').reply(201)
+      mock.onGet(`${config.apiHost}/api/categories`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.getAllCategories({ commit }).should.be.rejected
@@ -113,7 +114,7 @@ describe('store/modules/categories.js', () => {
 
     it('getAllCategories rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onGet('/api/categories').reply(404)
+      mock.onGet(`${config.apiHost}/api/categories`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.getAllCategories({ commit }).should.be.rejected
@@ -121,7 +122,7 @@ describe('store/modules/categories.js', () => {
 
     it('addCategory successfully', () => {
       const mock = new MockAdapter(axios)
-      mock.onPost('/api/category').reply(201)
+      mock.onPost(`${config.apiHost}/api/category`).reply(201)
       const commit = (type, payload) => {}
 
       const result = actions.addCategory({ commit })
@@ -130,7 +131,7 @@ describe('store/modules/categories.js', () => {
 
     it('addCategory rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onPost('/api/category').reply(200)
+      mock.onPost(`${config.apiHost}/api/category`).reply(200)
       const commit = (type, payload) => {}
 
       return actions.addCategory({ commit }).should.be.rejected
@@ -138,7 +139,7 @@ describe('store/modules/categories.js', () => {
 
     it('addCategory rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onPost('/api/category').reply(404)
+      mock.onPost(`${config.apiHost}/api/category`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.addCategory({ commit }).should.be.rejected
@@ -146,7 +147,7 @@ describe('store/modules/categories.js', () => {
 
     it('editCategory successfully', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/category/1').reply(200)
+      mock.onPatch(`${config.apiHost}/api/category/1`).reply(200)
       const commit = (type, payload) => {}
 
       const result = actions.editCategory({ commit }, { id: 1, description: 'Foo' })
@@ -155,7 +156,7 @@ describe('store/modules/categories.js', () => {
 
     it('editCategory rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/category/1').reply(201)
+      mock.onPatch(`${config.apiHost}/api/category/1`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.editCategory({ commit }, { id: 1, description: 'Foo' }).should.be.rejected
@@ -163,7 +164,7 @@ describe('store/modules/categories.js', () => {
 
     it('editCategory rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onPatch('/api/category/1').reply(404)
+      mock.onPatch(`${config.apiHost}/api/category/1`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.editCategory({ commit }, { id: 1, description: 'Foo' }).should.be.rejected
@@ -171,7 +172,7 @@ describe('store/modules/categories.js', () => {
 
     it('deleteCategory successfully', () => {
       const mock = new MockAdapter(axios)
-      mock.onDelete('/api/category/1').reply(200)
+      mock.onDelete(`${config.apiHost}/api/category/1`).reply(200)
       const commit = (type, payload) => {}
 
       const result = actions.deleteCategory({ commit }, 1)
@@ -180,7 +181,7 @@ describe('store/modules/categories.js', () => {
 
     it('deleteCategory rejects on unexpected HTTP code', () => {
       const mock = new MockAdapter(axios)
-      mock.onDelete('/api/category/1').reply(201)
+      mock.onDelete(`${config.apiHost}/api/category/1`).reply(201)
       const commit = (type, payload) => {}
 
       return actions.deleteCategory({ commit }, 1).should.be.rejected
@@ -188,7 +189,7 @@ describe('store/modules/categories.js', () => {
 
     it('deleteCategory rejects on error', () => {
       const mock = new MockAdapter(axios)
-      mock.onDelete('/api/category/1').reply(404)
+      mock.onDelete(`${config.apiHost}/api/category/1`).reply(404)
       const commit = (type, payload) => {}
 
       return actions.deleteCategory({ commit }, 1).should.be.rejected

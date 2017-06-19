@@ -1,5 +1,5 @@
-<template>
-  <div class="tab-pane" :class='isActiveUser' role="tabpanel">
+<!-- <template>
+  <div>
     <UserTaskTable :tasks='tasks' :background='background'></UserTaskTable>
   </div>
 </template>
@@ -8,6 +8,7 @@
 import moment from 'moment'
 import Auth from 'Auth'
 import UserTaskTable from './UserTaskTable'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'UserTabPanel',
@@ -23,7 +24,7 @@ export default {
   },
   computed: {
     tasks () {
-      return this.$store.getters.userTasks(this.user.id, this.startDate, this.endDate)
+      return this.userTasks(this.user.id, this.startDate, this.endDate)
     },
     isActiveUser () {
       if (Auth.isLoggedIn) {
@@ -32,7 +33,8 @@ export default {
         }
       }
       return ''
-    }
+    },
+    ...mapGetters(['userTasks'])
   },
   methods: {
     updateDates (newDates) {
@@ -45,3 +47,4 @@ export default {
   }
 }
 </script>
+ -->

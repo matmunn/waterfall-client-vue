@@ -1,9 +1,10 @@
-import Vue from 'vue'
 import AdminClient from '@/components/AdminClient'
 import helpers from 'Helpers'
-import { getRenderedText } from '../../helpers'
+import store from '@/store'
+import router from '@/router'
+import { mount } from 'avoriaz'
 
-const testClient = {
+const testData = {
   client: {
     id: 1,
     name: 'Foo Client',
@@ -11,42 +12,42 @@ const testClient = {
   }
 }
 
-describe('AdminClient.vue', () => {
+describe('components/AdminClient.vue', () => {
   it('should render correct contents', () => {
-    expect(getRenderedText(AdminClient, testClient))
-      .to.include('Foo Client')
+    const wrapper = mount(AdminClient, { propsData: testData, router })
+
+    expect(wrapper.text()).to.include('Foo Client')
   })
 
   it('should compute values correctly', () => {
-    const Ctor = Vue.extend(AdminClient)
-    const vm = new Ctor({ propsData: testClient }).$mount()
+    const wrapper = mount(AdminClient, { propsData: testData, router, store })
 
-    expect(vm.deleteLink).to.equal(`/admin/clients/1/delete`)
-    expect(vm.editLink).to.equal(`/admin/clients/1/edit`)
+    expect(wrapper.vm.deleteLink).to.equal(`/admin/clients/1/delete`)
+    expect(wrapper.vm.editLink).to.equal(`/admin/clients/1/edit`)
   })
 
-  it('deleteClient should work as expected', function () {
+  it('confirmDelete should work as expected', function () {
     const swalStub = sinon.stub(helpers, 'swal').resolves()
 
-    const Ctor = Vue.extend(AdminClient)
-    const vm = new Ctor({ propsData: testClient }).$mount()
+    const wrapper = mount(AdminClient, { store, router, propsData: testData })
 
-    const dispatchDeleteStub = sinon.stub(vm, 'dispatchDelete').returns(true)
+    const dispatchDeleteStub = sinon.stub(wrapper.vm, 'deleteClient').returns(true)
 
-    return vm.deleteClient().then(() => {
+    return wrapper.vm.confirmDelete().then(() => {
       expect(swalStub.called).to.equal(true)
       expect(dispatchDeleteStub.called).to.equal(true)
+      expect(dispatchDeleteStub.calledWith(1)).to.equal(true)
 
       swalStub.restore()
     })
   })
 
-  it('deleteClient does nothing on cancel', () => {
+  it('confirmDelete does nothing on cancel', () => {
     const stub = sinon.stub(helpers, 'swal').rejects()
-    const Ctor = Vue.extend(AdminClient)
-    const vm = new Ctor({ propsData: testClient }).$mount()
 
-    vm.deleteClient()
+    const wrapper = mount(AdminClient, { store, router, propsData: testData })
+
+    wrapper.vm.confirmDelete()
 
     expect(stub.called).to.equal(true)
 

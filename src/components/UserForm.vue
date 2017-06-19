@@ -1,22 +1,22 @@
 <template>
-<form @submit.prevent="saveUser">
+<form @submit.prevent='saveUser'>
   <div class="form-group">
     <label for="name">Name</label>
-    <input id="name" type="text" v-model="name" class="form-control" required>
+    <input id="name" type="text" v-model='name' class="form-control" required>
   </div>
   <div class="form-group">
     <label for="email">Email</label>
-    <input id="email" type="email" v-model="email" class="form-control" required>
+    <input id="email" type="email" v-model='email' class="form-control" required>
   </div>
   <div class="form-group">
     <label for="password">Password</label>
-    <input id="password" type="password" v-model="password" class="form-control">
+    <input id="password" type="password" v-model='password' class="form-control">
   </div>
   <div class="form-group">
     <label for="category">Category</label>
-    <select v-model="category" class="form-control" required>
+    <select v-model='category' class="form-control" required>
       <option disabled value="">Choose a category</option>
-      <option v-for="c in categories" :value="c.id">{{ c.description }}</option>
+      <option v-for='category in categories' :value='category.id'>{{ category.description }}</option>
     </select>
   </div>
   <div class="form-group">
@@ -29,7 +29,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ClipLoader from 'vue-spinner/src/ClipLoader'
-import { toastr } from 'Helpers'
+import helpers from 'Helpers'
 
 export default {
   name: 'UserForm',
@@ -39,7 +39,7 @@ export default {
   },
   data () {
     return {
-      editingUser: this.$store.getters.user(this.user),
+      editingUser: helpers.getUser(this.user),
       name: '',
       email: '',
       password: '',
@@ -47,37 +47,34 @@ export default {
       loading: false
     }
   },
-  methods: Object.assign({},
-    mapActions(['getAllCategories']),
-    {
-      saveUser () {
-        this.loading = true
+  methods: {
+    saveUser () {
+      this.loading = true
 
-        const userData = {
-          name: this.name,
-          email: this.email,
-          password: this.password,
-          category: this.category
-        }
-
-        let action = 'addUser'
-        if (this.editing) {
-          action = 'editUser'
-          userData.id = this.editingUser.id
-        }
-
-        this.$store.dispatch(action, userData).then(response => {
-          this.loading = false
-          if (response === true) {
-            this.$router.push('/admin/users')
-          }
-        }, () => {
-          this.loading = false
-          toastr.error(`An error occurred while processing your request`, `Error`)
-        })
+      const userData = {
+        name: this.name,
+        email: this.email,
+        password: this.password,
+        category: this.category
       }
-    }
-  ),
+
+      let action = this.addUser
+      if (this.editing) {
+        action = this.editUser
+        userData.id = this.editingUser.id
+      }
+
+      return action(userData).then(() => {
+        this.loading = false
+
+        this.$router.push('/admin/users')
+      }, () => {
+        this.loading = false
+        helpers.toastr.error(`An error occurred while processing your request`, `Error`)
+      })
+    },
+    ...mapActions(['getAllCategories', 'addUser', 'editUser'])
+  },
   computed: mapGetters(['categories']),
   created () {
     this.getAllCategories()
