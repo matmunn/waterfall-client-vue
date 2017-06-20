@@ -1,34 +1,34 @@
 <template>
-  <div class="columns">
-    <div class="column is-4 is-offset-4 flex-center">
-      <img class="logo" src="/static/img/logo.svg">
-      <form @submit.prevent="submitLogin">
-      <b-field label="Email Address">
-          <b-input v-model='email'></b-input>
-      </b-field>
-      <b-field label="Password">
-          <b-input type="password" v-model='password'></b-input>
-      </b-field>
-        <button v-if='!loading' type="submit" class="button is-success is-block">
-          Log In
-        </button>
-        <ClipLoader v-if='loading' :color='`#3097D1`' :size='`30px`'></ClipLoader>
-      </form>
-    </div>
+<div class="columns">
+  <div class="column is-4 is-offset-4 flex-center">
+    <img class="logo" src="/static/img/logo.svg">
+    <form @submit.prevent="submitLogin">
+    <b-field label="Email Address">
+        <b-input v-model='email'></b-input>
+    </b-field>
+    <b-field label="Password">
+        <b-input type="password" v-model='password'></b-input>
+    </b-field>
+      <button v-if='!loading' type="submit" class="button is-success is-pulled-right">
+        Log In
+      </button>
+      <ClipLoader v-if='loading' :color='`#3097D1`' :size='`30px`'></ClipLoader>
+    </form>
   </div>
+</div>
 </template>
 
 <style scoped>
-  .flex-center {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 100vh;
-  }
-  .logo {
-    width: 50%;
-    margin: 0 auto 2em;
-  }
+.flex-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+}
+.logo {
+  width: 50%;
+  margin: 0 auto 2em;
+}
 </style>
 
 <script>
