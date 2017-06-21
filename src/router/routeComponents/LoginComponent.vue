@@ -15,16 +15,16 @@
       <div class="field">
         <label for="email" class="label">Email Address</label>
         <p class="control">
-          <input type="email" id="email" class="input" v-model='email'>
+          <input type="email" id="email" class="input" v-model='email' required>
         </p>
       </div>
       <div class="field">
         <label for="password" class="label">Password</label>
         <p class="control">
-          <input type="password" class="input" id="password" v-model='password'>
+          <input type="password" class="input" id="password" v-model='password' required>
         </p>
       </div>
-      <button type="submit" class="button is-success is-pulled-right" :class="{ 'is-loading': loading }">
+      <button type="submit" class="button is-primary is-pulled-right" :class="{ 'is-loading': loading }">
         Log In
       </button>
       <!-- <ClipLoader v-if='loading' :color='`#3097D1`' :size='`30px`'></ClipLoader> -->
