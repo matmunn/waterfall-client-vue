@@ -1,7 +1,7 @@
 <template>
 <div>
   <router-link to="/admin">
-    <img src="/img/savi-logo.svg" class="logo">
+    <img src="/static/img/logo.svg" class="logo">
   </router-link>
 
   <div class="wip-link">
@@ -53,6 +53,7 @@
   width: 10%;
   margin: 1vh auto 2vh;
   display: block;
+  min-width: 200px;
   max-width: 300px;
 }
 .wip-link {

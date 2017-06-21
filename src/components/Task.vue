@@ -106,9 +106,11 @@ td:nth-of-type(7n+4) {
 
 <script>
 import moment from 'moment'
-import { getUser, getClient, getNotes } from 'Helpers'
+import helpers from 'Helpers'
 import NoteModal from './NoteModal'
 import { mapActions } from 'vuex'
+
+const { getUser, getClient, getNotes } = helpers
 
 export default {
   name: 'Task',
@@ -118,10 +120,14 @@ export default {
   },
   methods: {
     markCompleted () {
-      this.markTaskComplete(this.task.id)
+      return this.markTaskComplete(this.task.id).catch(() => {
+        helpers.toastr.error(`There was an error and your task couldn't be marked as complete.`, 'Error')
+      })
     },
     markIncomplete () {
-      this.markTaskIncomplete(this.task.id)
+      return this.markTaskIncomplete(this.task.id).catch(() => {
+        helpers.toastr.error(`There was an error and your task couldn't be marked as incomplete.`, 'Error')
+      })
     },
     shadeCell (cell) {
       return this.task.blocks.indexOf(cell) > -1

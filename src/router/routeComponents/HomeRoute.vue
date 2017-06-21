@@ -1,11 +1,13 @@
 <template>
   <div>
     <div>
-      <img src="/static/img/logo.svg" class="logo">
+      <!-- <img src="/static/img/logo.svg" class="logo"> -->
+      <div class="logo" v-html='logoSvg'></div>
     </div>
     <div class="date-inputs">
-      Welcome Mat
-      <div class="field has-addons">
+      <router-link to='/admin'>Admin</router-link>
+      <router-link to='/logout'>Logout</router-link>
+      <div class="field has-addons has-addons-centered">
         <p class="control">
           <DatePicker :value='startDate' :input-class="datepickerInputClass" @selected='chooseDate' :wrapper-class='datepickerWrapperClass'></DatePicker>
         </p>
@@ -18,13 +20,12 @@
           <DatePicker :value='endDate' :input-class="datepickerInputClass" @selected='chooseDate' :wrapper-class='datepickerWrapperClass'></DatePicker>
         </p>
       </div>
-      <router-link to='/logout'>Logout</router-link>
     </div>
-    <b-tabs v-model='activeTab' :animated='false'>
-      <b-tab-item v-for='category in displayCategories' :key='category.id' :label='category.description'>
+    <Tabs>
+      <Tab v-for='category in displayCategories' :key='category.id' :name='category.description'>
         <CategoryTabPanel :key='category.id' :category='category' :id='categorySafeName(category.description)'></CategoryTabPanel>
-      </b-tab-item>
-    </b-tabs>
+      </Tab>
+    </Tabs>
   </div>
 </template>
 
@@ -56,14 +57,18 @@ import DatePicker from 'vuejs-datepicker'
 // import DatePicker from 'vue-bulma-datepicker'
 import { toastr, getTask } from 'Helpers'
 import { mapActions, mapGetters } from 'vuex'
-import { CategoryTabPanel } from 'Components'
+import { CategoryTabPanel, Tabs, Tab } from 'Components'
 // import { findIndex } from 'lodash'
+
+import logo from '../../../static/img/logo.svg'
 
 export default {
   name: 'HomeRoute',
   components: {
     CategoryTabPanel,
-    DatePicker
+    DatePicker,
+    Tabs,
+    Tab
   },
   data () {
     return {
@@ -71,11 +76,12 @@ export default {
       startDate: moment().day(1).format('YYYY-MM-DD'),
       endDate: moment().day(5).format('YYYY-MM-DD'),
       datePeriod: {},
-      datepickerInputClass: 'form-control',
+      datepickerInputClass: 'input is-static',
       datepickerWrapperClass: 'inline',
       taskCount: 999,
       noteCount: 999,
-      activeTab: 0
+      activeTab: 0,
+      logoSvg: logo
     }
   },
   computed: mapGetters(['displayCategories']),

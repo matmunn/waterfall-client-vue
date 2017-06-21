@@ -1,13 +1,11 @@
 <template>
 <div>
   <div v-if="users.length">
-    <b-tabs v-model='activeTab' :animated='false'>
-      <b-tab-item v-for='user in users' :key='user.id' :label='user.name'>
-        <!-- <CategoryTabPanel :key='category.id' :category='category' :id='categorySafeName(category.description)'></CategoryTabPanel> -->
-        <!-- <UserTabPanel :key="user.id" :user="user" :id="'user' + user.id" :background="category.hex_color"></UserTabPanel> -->
+    <Tabs>
+      <Tab v-for='user in users' :key='user.id' :name='user.name'>
         <UserTaskTable :key="user.id" :user="user" :tasks='userTasks(user.id, startDate, endDate)' :background="category.hex_color"></UserTaskTable>
-      </b-tab-item>
-    </b-tabs>
+      </Tab>
+    </Tabs>
   </div>
   <div class="no-tasks" v-else>
     <h3>
@@ -28,16 +26,19 @@
 <script>
 import moment from 'moment'
 import Auth from 'Auth'
-import UserTabPanel from './UserTabPanel'
-import UserTaskTable from './UserTaskTable'
+// import { UserTaskTable, Tabs, Tab } from 'Components'
 import { mapGetters } from 'vuex'
+import UserTaskTable from './UserTaskTable'
+import Tabs from './Tabs'
+import Tab from './Tab'
 
 export default {
   name: 'CategoryTabPanel',
   props: ['category'],
   components: {
-    UserTabPanel,
-    UserTaskTable
+    UserTaskTable,
+    Tabs,
+    Tab
   },
   data () {
     return {

@@ -6,7 +6,6 @@
 import '@/assets/styles/app.scss'
 
 import Vue from 'vue'
-import Buefy from 'buefy'
 
 import router from './router'
 import store from './store'
@@ -45,10 +44,6 @@ axios.interceptors.request.use(config => {
   config.headers.common['Authorization'] = `Bearer ${auth.getToken()}`
 
   return config
-})
-
-Vue.use(Buefy, {
-  defaultIconPack: 'fa'
 })
 
 Vue.config.productionTip = false
