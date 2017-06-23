@@ -1,14 +1,13 @@
 <template>
 <div class="login-component">
-  <div class="design-background">
-    <!-- <img class="logo" src="/static/img/logo.svg"> -->
+  <div class="design-background brand-header">
     <div class="logo" v-html='logoSvg'></div>
   </div>
   <div class="grey-background">
 
   </div>
   <div class="login-container flex-center">
-    <p class="is-primary is-bold title is-4 has-text-centered">
+    <p class="is-primary has-bold-text title is-4 has-text-centered">
       Login
     </p>
     <form @submit.prevent="submitLogin">
@@ -27,31 +26,27 @@
       <button type="submit" class="button is-primary is-pulled-right" :class="{ 'is-loading': loading }">
         Log In
       </button>
-      <!-- <ClipLoader v-if='loading' :color='`#3097D1`' :size='`30px`'></ClipLoader> -->
     </form>
   </div>
 </div>
 </template>
 
 <style scoped lang="scss">
-@import "brand";
+@import "src/assets/styles/brand";
 
 .design-background {
-  height: 40%;
-  background-color: $brand-blue;
-  background-image: url('/static/img/login-background.jpg');
-  background-size: cover;
-  background-repeat: no-repeat;
+  height: 23%;
+  background-color: $brand-color-primary;
+  // background-image: linear-gradient(75deg, rgba(121,164,252, 0.4) 0%, rgba(30,87,153, 0.4) 38%, rgba(30,87,153, 0.4) 68%, rgba(41,137,216, 0.4) 100%), url('/static/img/login-background.svg');
 }
 .grey-background {
-  height: 60%;
+  height: 77%;
   background-color: $general-grey;
 }
 .flex-center {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  // min-height: 100%;
 }
 .login-component {
   height: 100%;
@@ -60,7 +55,7 @@
   margin: 0 auto;
   width: 500px;
   position: absolute;
-  top: 35%;
+  top: 18%;
   min-height: 400px;
   left: calc(50% - 250px);
   background-color: #FFFFFF;
@@ -93,16 +88,12 @@
 
 <script>
 import { CLEAR_NEXT_ROUTE } from '@/store/mutations'
-import ClipLoader from 'vue-spinner/src/ClipLoader'
 import { swal } from 'Helpers'
 import auth from 'Auth'
 import logo from '../../../static/img/logo.svg'
 
 export default {
   name: 'LoginComponent',
-  components: {
-    ClipLoader
-  },
   data () {
     return {
       email: '',

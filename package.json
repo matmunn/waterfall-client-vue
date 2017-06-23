@@ -28,7 +28,7 @@
     "pusher-js": "^4.1.0",
     "resolve-url-loader": "^2.0.2",
     "sass-loader": "^6.0.5",
-    "savi-bootstrap-daterangepicker": "^1.1.0",
+    "savi-bootstrap-daterangepicker": "^3.0.0",
     "sweetalert2": "^6.6.4",
     "toastr": "^2.1.2",
     "vue": "^2.3.3",

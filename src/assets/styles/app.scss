@@ -8,11 +8,15 @@
 
 @import "custom-bulma";
 // @import "~bootstrap-sass/assets/stylesheets/bootstrap";
+// @import "~font-awesome-sass/assets/stylesheets/font-awesome";
 
-@import "~font-awesome-sass/assets/stylesheets/font-awesome";
 @import "~sweetalert2/src/sweetalert2";
 @import "~toastr/build/toastr";
 @import "~savi-bootstrap-daterangepicker/daterangepicker.scss";
+
+.fa {
+  font-size: 1em;
+}
 
 html, body {
   height: 100%;
@@ -26,13 +30,13 @@ td, th {
     border: 1px solid black;
 }
 
-.login-component {
-  .logo {
-    polygon, path {
-      fill: #FFFFFF !important;
-    }
-  }
-}
+// .waterfall-home {
+//   .logo {
+//     polygon, path {
+//       fill: $brand-blue !important;
+//     }
+//   }
+// }
 
 .swal2-shown {
   .columns {
@@ -49,9 +53,20 @@ a {
 
 
 .is-primary {
-  color: $brand-blue;
+  color: $brand-color-primary;
+}
+.has-bold-text {
+  font-weight: bold;
 }
 
-.is-bold {
-  font-weight: bold;
+.brand-header {
+  background-image: linear-gradient(141deg, rgba(0,167,191, 0.4) 0%, rgba(7,168,235, 0.5) 71%, rgba(13,143,254, 0.4) 100%), url('/static/img/login-background.svg');
+}
+
+.logo {
+  width: 20%;
+  min-width: 200px;
+  max-width: 300px;
+  margin: 1vh auto;
+  display: block;
 }

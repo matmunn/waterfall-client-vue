@@ -1,36 +1,60 @@
 <template>
 <div>
-  <div>
-    <div class="col-md-10">
-      <p>
+  <div class="columns">
+    <div class="column is-10">
+      <p class="title is-5">
         <strong>{{ newestDate }} by {{ getUserName() }}</strong><br />
-        <div v-if='!editing'>
-          {{ noteMessage }}
-        </div>
-        <div v-if='editing'>
-          <form @submit.prevent='saveNote'>
-            <div class="form-group">
-              <textarea v-model='noteMessage' class='form-control'></textarea>
-            </div>
-            <input v-if='!editLoading' type='submit' value='Save' class='btn btn-primary col-md-6'>
-            <button v-if='!editLoading' class='btn btn-default col-md-6' @click='cancelEdit'>Cancel</button>
-            <ClipLoader v-if='editLoading' :color='`#3097D1`' :size='`30px`'></ClipLoader>
-          </form>
-        </div>
-        <div v-if='pendingDelete'>
-          <div class="row">
-            <strong>Are you sure you want to delete this note?</strong>
-          </div>
-          <div class="row">
-            <ClipLoader v-if='deleteLoading' :color='`#3097D1`' :size='`30px`'></ClipLoader>
-            <button v-if='!deleteLoading' class='btn btn-danger col-md-6 col-md-offset-3' @click='confirmDeleteNote'>Delete</button>
-          </div>
-        </div>
       </p>
     </div>
-    <div class="col-md-2 text-right">
-      <i class="fa fa-lg fa-edit" @click='enableEdit'></i>
-      <i class="fa fa-lg fa-trash-o" @click='toggleDeleteMode'></i>
+    <div class="column is-2 has-text-right">
+      <i class="fa fa-lg fa-edit title is-5" @click='enableEdit'></i>
+      <i class="fa fa-lg fa-trash-o title is-5" @click='toggleDeleteMode'></i>
+    </div>
+  </div>
+  <div class="columns">
+    <div class="column">
+      <div v-if='!editing'>
+        <p class="subtitle is-6">
+          {{ noteMessage }}
+        </p>
+      </div>
+      <div v-if='editing'>
+        <form @submit.prevent='saveNote'>
+          <div class="columns">
+            <div class="column">
+              <div class="field">
+                <textarea v-model='noteMessage' class='textarea'></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column is-6">
+              <button type='submit' class='button is-primary column is-12' :class="{ 'is-loading': editLoading }">
+                Save
+              </button>
+            </div>
+            <div class="column is-6">
+              <button v-if='!editLoading' class='button column is-12' @click='cancelEdit'>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div v-if='pendingDelete'>
+        <div class="columns">
+          <div class="column has-text-centered">
+            <strong>Are you sure you want to delete this note?</strong>
+          </div>
+        </div>
+        <div class="columns">
+          <div class="column is-4 is-offset-4">
+            <button class='button is-danger column is-12' :class="{ 'is-loading': deleteLoading }" @click='confirmDeleteNote'>
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="clearfix"></div>
   </div>
@@ -80,6 +104,7 @@ export default {
     },
     enableEdit () {
       this.editing = true
+      this.pendingDelete = false
     },
     saveNote () {
       this.editLoading = true
@@ -101,6 +126,9 @@ export default {
     },
     toggleDeleteMode () {
       this.pendingDelete = !this.pendingDelete
+      if (this.pendingDelete) {
+        this.editing = false
+      }
     },
     confirmDeleteNote () {
       this.deleteLoading = true

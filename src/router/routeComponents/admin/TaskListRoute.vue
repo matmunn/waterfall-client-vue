@@ -2,16 +2,24 @@
 <div>
   <div class="text-center space">
     <div class="row">
-      <div class="form-group col-md-2 col-md-offset-5">
-        <select class='form-control inline' v-model='selectedUser'>
+      <div class="field col-md-2 col-md-offset-5">
+        <select class='select inline' v-model='selectedUser'>
           <option v-for='user in users' :value='user.id'>{{ user.name }}</option>
         </select>
       </div>
     </div>
-    <div class="row">
-      <DatePicker :value='startDate' :input-class="datepickerInputClass" @selected='chooseDate2' :wrapper-class='datepickerWrapperClass'></DatePicker>
-      to
-      <DatePicker :value='endDate' :input-class="datepickerInputClass" @selected='chooseDate2' :wrapper-class='datepickerWrapperClass'></DatePicker>
+    <div class="field has-addons has-addons-centered">
+      <p class="control">
+        <DatePicker :value='startDate' :input-class="datepickerInputClass" @selected='chooseDate2' :wrapper-class='datepickerWrapperClass'></DatePicker>
+      </p>
+      <p class="control">
+        <span class="button is-static">
+          to
+        </span>
+      </p>
+      <p class="control">
+        <DatePicker :value='endDate' :input-class="datepickerInputClass" @selected='chooseDate2' :wrapper-class='datepickerWrapperClass'></DatePicker>
+      </p>
     </div>
   </div>
   <table>
@@ -77,7 +85,7 @@ export default {
     return {
       startDate: moment().day(1).hour(8).minute(0).toDate(),
       endDate: moment().day(5).hour(18).minute(0).toDate(),
-      datepickerInputClass: 'form-control',
+      datepickerInputClass: 'input is-static',
       datepickerWrapperClass: 'inline',
       selectedUser: ''
     }

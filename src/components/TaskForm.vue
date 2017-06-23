@@ -1,55 +1,59 @@
 <template>
 <form @submit.prevent="saveTask" @keydown.enter.prevent=''>
-  <div class="form-group">
-    <label for="user">Job is for</label>
-    <select id="user" class="form-control" v-model="user" required>
+  <div class="field">
+    <label class="label" for="user">Job is for</label>
+    <select id="user" class="input" v-model="user" required>
       <option disabled value="">Choose a user</option>
       <option v-for="user in users" :value="user.id">{{ user.name }}</option>
     </select>
   </div>
-  <div class="form-group">
-    <label for="client">Project</label>
+  <div class="field">
+    <label class="label" for="client">Project</label>
     <v-select label='name' :value.sync='client' :options='clients' :on-change='changeVal'></v-select>
   </div>
-  <div class="form-group">
-    <label for="description">Task Description</label>
-    <input id='description' type="text" v-model="description" class="form-control" required>
+  <div class="field">
+    <label class="label" for="description">Task Description</label>
+    <input id='description' type="text" v-model="description" class="input" required>
   </div>
-  <div class="row">
-    <div class="form-group col-md-6">
-      <label for="dateRange">Task Timings</label>
+  <div class="field">
+    <div class="field col-md-6">
+      <label class="label" for="dateRange">Task Timings</label>
       <DateRangePicker :id='`dateRange`' v-model='timings' :startTime='this.timings.start' :endTime='this.timings.end'></DateRangePicker>
     </div>
   </div>
-  <div class="row">
-    <div class="form-group col-md-6">
-      <label>
+  <div class="field">
+    <p class="control">
+      <label class="checkbox">
         <input type="checkbox" v-model='absence'>
         &nbsp;Task is an absence?
       </label>
-    </div>
-    <div class="form-group col-md-6" v-if='editing'>
-      <label>
-        <input type="checkbox" v-model='completed'>
-        &nbsp;Task Completed?
-      </label>
-    </div>
+    </p>
   </div>
-  <div class="form-group">
-    <label>
-      <input type="checkbox" v-model='recurring'>
-      &nbsp;Task is recurring?
-    </label>
+  <div class="field" v-if='editing'>
+    <p class="control">
+      <label class="checkbox">
+        <input type="checkbox" v-model='completed'>
+        &nbsp;Task is completed?
+      </label>
+    </p>
+  </div>
+  <div class="field">
+    <p class="control">
+      <label class="checkbox">
+        <input type="checkbox" v-model='recurring'>
+        &nbsp;Task is recurring?
+      </label>
+    </p>
   </div>
   <div v-if='recurring'>
-    <div class="form-group">
-      <label>Task recurs every:</label>
+    <div class="field">
+      <label class="label">Task recurs every:</label>
       <div class="row">
         <div class="col-md-6">
-          <input v-model='recurrencePeriod' type="number" class="form-control col-md-6" min="1" max="50">
+          <input v-model='recurrencePeriod' type="number" class="input col-md-6" min="1" max="50">
         </div>
         <div class="col-md-6">
-          <select v-model='recurrenceType' class="form-control">
+          <select v-model='recurrenceType' class="input">
             <option value='Days'>Days</option>
             <option value='Weeks'>Weeks</option>
             <option value='Months'>Months</option>
@@ -58,12 +62,20 @@
       </div>
     </div>
   </div>
-  <div class="form-group">
-    <ClipLoader v-if='loading' :color='`#3097D1`' :size='`30px`'></ClipLoader>
-    <input v-else type="submit" value="Save Task" class="btn btn-large btn-success">
+  <div class="field">
+    <button type="submit" class="button is-primary is-pulled-right" :class="{ 'is-loading': loading }">
+      Save Task
+    </button>
   </div>
 </form>
 </template>
+
+<style lang="scss">
+.v-select .dropdown-toggle {
+  @extend .input !optional;
+  border-radius: 0;
+}
+</style>
 
 <script>
 import ClipLoader from 'vue-spinner/src/ClipLoader'

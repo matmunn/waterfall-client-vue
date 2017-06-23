@@ -14,7 +14,7 @@
     <!-- <i class="material-icons" v-if="!task.completed" @click="markCompleted">done</i> -->
     <i class="fa fa-times" v-else @click="markIncomplete"></i>
     <!-- <i class="material-icons" v-else @click="markIncomplete">clear</i> -->
-    <i class="fa fa-comment-o" data-toggle="modal" :data-target='"#modal" + this.task.id'></i>
+    <i class="fa fa-comment-o" @click="showModal"></i>
     ({{ this.notes.length }})
   </td>
   <!-- Vue ranges are 1 indexed while our blocks are 0 indexed, need to subtract 1 to compensate -->
@@ -23,7 +23,7 @@
       <i class="fa fa-square fa-lg"></i>
     </div>
   </td>
-  <NoteModal :notes='this.notes' :task='this.task' />
+  <NoteModal :notes='this.notes' :task='this.task' :modalVisible='modalVisible' @hideModal='hideModal' />
 </tr>
 </template>
 
@@ -71,7 +71,7 @@ td:not(:first-of-type):not(:nth-of-type(2)) {
 }
 td {
   &:first-of-type, &:nth-of-type(2), &:nth-of-type(3) {
-    padding: 3px 10px;
+    padding: 3px 7px;
   }
 }
 td:nth-of-type(7n+4) {
@@ -134,6 +134,12 @@ export default {
     },
     getClient,
     getUser,
+    showModal () {
+      this.modalVisible = true
+    },
+    hideModal () {
+      this.modalVisible = false
+    },
     ...mapActions(['markTaskComplete', 'markTaskIncomplete'])
   },
   computed: {
@@ -167,6 +173,11 @@ export default {
         `\nClient: ${getClient(this.task.client_id).name}\n` +
         `Account Manager: ${getUser(getClient(this.task.client_id).account_manager_id).name}\n` +
         `\nCreated on ${createdAt.format('D MMM [at] HH:mm')} by ${getUser(this.task.created_by).name || 'Unknown'}`
+    }
+  },
+  data () {
+    return {
+      modalVisible: false
     }
   }
 }

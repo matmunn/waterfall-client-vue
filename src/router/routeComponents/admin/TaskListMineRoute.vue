@@ -1,10 +1,18 @@
 <template>
 <div>
   <div class="text-center space">
-    <div class="row">
-      <DatePicker :value='startDate' :input-class="datepickerInputClass" @selected='chooseDate2' :wrapper-class='datepickerWrapperClass'></DatePicker>
-      to
-      <DatePicker :value='endDate' :input-class="datepickerInputClass" @selected='chooseDate2' :wrapper-class='datepickerWrapperClass'></DatePicker>
+    <div class="field has-addons has-addons-centered">
+      <p class="control">
+        <DatePicker :value='startDate' :input-class="datepickerInputClass" @selected='chooseDate2' :wrapper-class='datepickerWrapperClass'></DatePicker>
+      </p>
+      <p class="control">
+        <span class="button is-static">
+          to
+        </span>
+      </p>
+      <p class="control">
+        <DatePicker :value='endDate' :input-class="datepickerInputClass" @selected='chooseDate2' :wrapper-class='datepickerWrapperClass'></DatePicker>
+      </p>
     </div>
   </div>
   <table>
@@ -64,13 +72,13 @@ export default {
     taskList () {
       return sortBy(filter(this.sortedTasksWithDate(this.startDate, this.endDate), task => task.created_by === Auth.getUser().id), ['completed', 'user_id', 'start_time'])
     },
-    ...mapGetters(['sortedTasks', 'users'])
+    ...mapGetters(['sortedTasksWithDate', 'users'])
   },
   data () {
     return {
       startDate: moment().day(1).hour(8).minute(0).format('YYYY-MM-DD'),
       endDate: moment().day(5).hour(18).minute(0).format('YYYY-MM-DD'),
-      datepickerInputClass: 'form-control',
+      datepickerInputClass: 'input is-static',
       datepickerWrapperClass: 'inline',
       selectedUser: ''
     }

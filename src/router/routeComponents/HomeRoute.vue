@@ -1,44 +1,56 @@
 <template>
-  <div>
-    <div>
-      <!-- <img src="/static/img/logo.svg" class="logo"> -->
-      <div class="logo" v-html='logoSvg'></div>
+<div class="waterfall-home">
+  <section class="hero is-primary is-bold">
+    <div class="hero-head">
+      <header class="nav">
+        <div class="container">
+          <div class="nav-left">
+            <router-link to='/overview' class="nav-item">Weekly Overview</router-link>
+          </div>
+          <div class="nav-right">
+            <router-link to='/admin' class="nav-item">Admin</router-link>
+            <router-link to='/logout' class="nav-item">Logout</router-link>
+          </div>
+        </div>
+      </header>
     </div>
-    <div class="date-inputs">
-      <router-link to='/admin'>Admin</router-link>
-      <router-link to='/logout'>Logout</router-link>
-      <div class="field has-addons has-addons-centered">
-        <p class="control">
-          <DatePicker :value='startDate' :input-class="datepickerInputClass" @selected='chooseDate' :wrapper-class='datepickerWrapperClass'></DatePicker>
-        </p>
-        <p class="control">
-          <span class="button is-static">
-            to
-          </span>
-        </p>
-        <p class="control">
-          <DatePicker :value='endDate' :input-class="datepickerInputClass" @selected='chooseDate' :wrapper-class='datepickerWrapperClass'></DatePicker>
-        </p>
+    <div class="hero-body">
+      <div class="container">
+        <div class="logo" v-html='logoSvg'></div>
       </div>
     </div>
-    <Tabs>
-      <Tab v-for='category in displayCategories' :key='category.id' :name='category.description'>
-        <CategoryTabPanel :key='category.id' :category='category' :id='categorySafeName(category.description)'></CategoryTabPanel>
-      </Tab>
-    </Tabs>
-  </div>
+    <div class="hero-foot">
+      <div class="container">
+        <div class="date-inputs">
+          <div class="field has-addons has-addons-centered">
+            <p class="control">
+              <DatePicker v-model='startDate' :config="{ dateFormat: 'Y-m-d' }"></DatePicker>
+            </p>
+            <p class="control">
+              <span class="button is-static">
+                to
+              </span>
+            </p>
+            <p class="control">
+              <DatePicker v-model='endDate' :config="{ dateFormat: 'Y-m-d' }"></DatePicker>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <Tabs>
+    <Tab v-for='category in displayCategories' :key='category.id' :name='category.description'>
+      <CategoryTabPanel :key='category.id' :category='category' :id='categorySafeName(category.description)'></CategoryTabPanel>
+    </Tab>
+  </Tabs>
+</div>
 </template>
 
-<style scoped>
-.logo {
-  width: 20%;
-  max-width: 300px;
-  margin: 1vh auto 2vh;
-  display: block;
-}
+<style scoped lang="scss">
 .date-inputs {
   text-align: center;
-  margin-bottom: 2vh;
+  margin-bottom: 20px;
 }
 </style>
 <style>
@@ -53,8 +65,8 @@
 <script>
 import Auth from 'Auth'
 import moment from 'moment'
-import DatePicker from 'vuejs-datepicker'
-// import DatePicker from 'vue-bulma-datepicker'
+// import DatePicker from 'vuejs-datepicker'
+import DatePicker from 'vue-bulma-datepicker'
 import { toastr, getTask } from 'Helpers'
 import { mapActions, mapGetters } from 'vuex'
 import { CategoryTabPanel, Tabs, Tab } from 'Components'
@@ -84,42 +96,50 @@ export default {
       logoSvg: logo
     }
   },
-  computed: mapGetters(['displayCategories']),
-  methods: Object.assign({},
-    mapActions(['getAllCategories', 'getAllUsers', 'getAllTasks', 'getAllClients', 'getAllNotes', 'getTasksBetweenDates']),
-    {
-      categorySafeName (catName) {
-        return catName.toLowerCase().replace(' ', '_')
-      },
-      chooseDate (date) {
-        this.startDate = moment(date).day(1).format('YYYY-MM-DD')
-        this.endDate = moment(date).day(5).format('YYYY-MM-DD')
-        this.$bus.$emit('date-changed-event', {
-          start: this.startDate,
-          end: this.endDate
-        })
-        this.fetchTasksWithDates()
-      },
-      isUserCategory (categoryId) {
-        if (Auth.isLoggedIn()) {
-          if (Auth.getUser().category_id === categoryId) {
-            return 'is-active'
-          }
-        }
-        return ''
-      },
-      fetchTasksWithDates () {
-        this.loading = true
-        this.$bus.$emit('started-loading-tasks')
-        this.getTasksBetweenDates({start: moment(this.startDate).format('YYYY-MM-DD'), end: moment(this.endDate).format('YYYY-MM-DD')}).then(tasks => {
-          this.loading = false
-          this.$bus.$emit('finished-loading-tasks')
-        }, () => {
-          toastr.error(`There was an error fetching tasks`, 'Error')
-        })
-      }
+  watch: {
+    startDate (val) {
+      this.startDate = moment(val).day(1).format('YYYY-MM-DD')
+      this.endDate = moment(val).day(5).format('YYYY-MM-DD')
+      this.updateDates()
+    },
+    endDate (val) {
+      this.startDate = moment(val).day(1).format('YYYY-MM-DD')
+      this.endDate = moment(val).day(5).format('YYYY-MM-DD')
+      // this.updateDates()
     }
-  ),
+  },
+  computed: mapGetters(['displayCategories']),
+  methods: {
+    categorySafeName (catName) {
+      return catName.toLowerCase().replace(' ', '_')
+    },
+    updateDates () {
+      this.$bus.$emit('date-changed-event', {
+        start: this.startDate,
+        end: this.endDate
+      })
+      this.fetchTasksWithDates()
+    },
+    isUserCategory (categoryId) {
+      if (Auth.isLoggedIn()) {
+        if (Auth.getUser().category_id === categoryId) {
+          return 'is-active'
+        }
+      }
+      return ''
+    },
+    fetchTasksWithDates () {
+      this.loading = true
+      this.$bus.$emit('started-loading-tasks')
+      this.getTasksBetweenDates({start: moment(this.startDate).format('YYYY-MM-DD'), end: moment(this.endDate).format('YYYY-MM-DD')}).then(tasks => {
+        this.loading = false
+        this.$bus.$emit('finished-loading-tasks')
+      }, () => {
+        toastr.error(`There was an error fetching tasks`, 'Error')
+      })
+    },
+    ...mapActions(['getAllCategories', 'getAllUsers', 'getAllTasks', 'getAllClients', 'getAllNotes', 'getTasksBetweenDates'])
+  },
   created () {
     this.getAllCategories().then(() => {
       // this.activeTab = findIndex(this.displayCategories, item => item.id === Auth.getUser().category_id)
@@ -151,11 +171,11 @@ export default {
         })
         .listen('.TaskAdded', data => {
           toastr.info(`A new task was added (${data.task.description})<br>
-            Staring ${moment(data.task.start_date).format('YYYY-MM-DD HH:mm')}
+            Starting ${moment(data.task.start_date).format('YYYY-MM-DD HH:mm')}
           `, 'Notice')
           if (this.$store.getters.notificationPermission !== 'denied') {
             const n = new Notification('Waterfall', {body: `A new task was added (${data.task.description})\n
-              Staring ${moment(data.task.start_date).format('YYYY-MM-DD HH:mm')}
+              Starting ${moment(data.task.start_date).format('YYYY-MM-DD HH:mm')}
             `})
             setTimeout(n.close.bind(n), 5000)
           }

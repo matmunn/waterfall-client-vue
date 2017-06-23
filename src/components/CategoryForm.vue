@@ -1,37 +1,34 @@
 <template>
 <form @submit.prevent="saveCategory">
-  <div class="form-group">
-    <label for="name">Category Name</label>
-    <input id="name" type="text" v-model="description" class="form-control" required>
+  <div class="field">
+    <label class="label" for="name">Category Name</label>
+    <input id="name" type="text" v-model="description" class="input" required>
   </div>
-  <div class="form-group">
-    <label for="color">Hex Color</label>
-    <input id="color" type="text" v-model="color" class="form-control" required>
+  <div class="field">
+    <label class="label" for="color">Hex Color</label>
+    <input id="color" type="text" v-model="color" class="input" required>
   </div>
-  <div class="form-group">
-    <label>
+  <div class="field">
+    <label class="label">
       <input type="checkbox" v-model='visible'>
       &nbsp;Display in category list?
     </label>
   </div>
-  <div class="form-group">
-    <input v-if='!loading' type="submit" value="Save Category" class="btn btn-large btn-success">
-    <ClipLoader v-if='loading' :color='`#3097D1`' :size='`30px`'></ClipLoader>
+  <div class="field">
+    <button type="submit" class="button is-primary is-pulled-right" :class="{ 'is-loading': loading }">
+      Save Category
+    </button>
   </div>
 </form>
 </template>
 
 <script>
-import ClipLoader from 'vue-spinner/src/ClipLoader'
 import helpers from 'Helpers'
 import { mapActions } from 'vuex'
 
 export default {
   name: 'CategoryForm',
   props: ['category', 'editing'],
-  components: {
-    ClipLoader
-  },
   data () {
     return {
       description: '',

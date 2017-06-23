@@ -1,42 +1,39 @@
 <template>
 <form @submit.prevent='saveUser'>
-  <div class="form-group">
-    <label for="name">Name</label>
-    <input id="name" type="text" v-model='name' class="form-control" required>
+  <div class="field">
+    <label class="label" for="name">Name</label>
+    <input id="name" type="text" v-model='name' class="input" required>
   </div>
-  <div class="form-group">
-    <label for="email">Email</label>
-    <input id="email" type="email" v-model='email' class="form-control" required>
+  <div class="field">
+    <label class="label" for="email">Email</label>
+    <input id="email" type="email" v-model='email' class="input" required>
   </div>
-  <div class="form-group">
-    <label for="password">Password</label>
-    <input id="password" type="password" v-model='password' class="form-control">
+  <div class="field">
+    <label class="label" for="password">Password</label>
+    <input id="password" type="password" v-model='password' class="input">
   </div>
-  <div class="form-group">
-    <label for="category">Category</label>
-    <select v-model='category' class="form-control" required>
+  <div class="field">
+    <label class="label" for="category">Category</label>
+    <select v-model='category' class="select" required>
       <option disabled value="">Choose a category</option>
       <option v-for='category in categories' :value='category.id'>{{ category.description }}</option>
     </select>
   </div>
-  <div class="form-group">
-    <input v-if='!loading' type="submit" value="Save User" class="btn btn-large btn-success">
-    <ClipLoader v-if='loading' :color='`#3097D1`' :size='`30px`'></ClipLoader>
+  <div class="field">
+    <button type="submit" class="button is-primary is-pulled-right" :class="{ 'is-loading': loading } ">
+      Save User
+    </button>
   </div>
 </form>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import ClipLoader from 'vue-spinner/src/ClipLoader'
 import helpers from 'Helpers'
 
 export default {
   name: 'UserForm',
   props: ['user', 'editing'],
-  components: {
-    ClipLoader
-  },
   data () {
     return {
       editingUser: helpers.getUser(this.user),

@@ -2,7 +2,7 @@
 <div>
   <table v-if="tasks.length" align="center">
     <tr class="every-cell-br2px">
-      <th rowspan="2" colspan="4">
+      <th rowspan="2" colspan="4" class="job-title-cell">
         Job Title
       </th>
       <th colspan="7">
@@ -77,7 +77,7 @@
     </tr>
   </table>
   <div class="no-tasks" v-else>
-    <h3 v-if='!loading && !tasks.length'>
+    <h3 class="title is-5" v-if='!loading && !tasks.length'>
       This user doesn't have any tasks for this week.
     </h3>
     <ClipLoader v-if='loading' :color='`#3097D1`' :size='`30px`' class='cliploader'></ClipLoader>
@@ -92,6 +92,8 @@
 table {
   font-size: 0.8vw;
   margin-top: 2vh;
+  width: 100%;
+  overflow-x: scroll;
 }
 th {
   text-align: center;
@@ -102,6 +104,7 @@ th {
     transform: rotate(-90deg);
     height: 3vw;
     font-weight: normal;
+    padding-top: 0.95vw;
   }
 }
 tr:not(.rotated-text) th:first-of-type {
@@ -115,13 +118,17 @@ tr:not(.every-cell-br2px) th:nth-of-type(7n), .every-cell-br2px th {
     text-align: center;
   }
 }
+.job-title-cell {
+  vertical-align: middle;
+}
 
-@media (min-width: 2000px) {
+@media (min-width: 1900px) {
   table {
     font-size: 17px;
   }
   .rotated-text th {
     height: 70px;
+    padding-top: 23px;
   }
 }
 tr:last-of-type {
