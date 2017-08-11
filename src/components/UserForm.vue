@@ -14,10 +14,12 @@
   </div>
   <div class="field">
     <label class="label" for="category">Category</label>
-    <select v-model='category' class="select" required>
-      <option disabled value="">Choose a category</option>
-      <option v-for='category in categories' :value='category.id'>{{ category.description }}</option>
-    </select>
+    <div class="select">
+      <select v-model='category' required>
+        <option disabled value="">Choose a category</option>
+        <option v-for='category in categories' :value='category.id'>{{ category.description }}</option>
+      </select>
+    </div>
   </div>
   <div class="field">
     <button type="submit" class="button is-primary is-pulled-right" :class="{ 'is-loading': loading } ">
@@ -65,9 +67,13 @@ export default {
         this.loading = false
 
         this.$router.push('/admin/users')
-      }, () => {
+      }, err => {
         this.loading = false
-        helpers.toastr.error(`An error occurred while processing your request`, `Error`)
+        if (err === 'category-not-found-error') {
+          helpers.toastr.error(`The selected category was not found`, 'Error')
+        } else {
+          helpers.toastr.error(`An error occurred while processing your request`, 'Error')
+        }
       })
     },
     ...mapActions(['getAllCategories', 'addUser', 'editUser'])

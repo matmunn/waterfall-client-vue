@@ -14,9 +14,25 @@ export const actions = {
           localStorage.setItem('loginExpires', moment().add(24, 'hours').toISOString())
           resolve(response.data)
         }
-        reject(`Your login details were incorrect`)
-      }, () => {
-        reject(`There was an error with the request`)
+        reject(response)
+      }, err => {
+        reject(err)
+      })
+    })
+  },
+  attemptRegister ({ commit }, userData) {
+    return new Promise((resolve, reject) => {
+      axios.post(`${config.apiHost}/api/register`, userData).then(response => {
+        if (response.status === 201) {
+          commit(LOGIN, response.data)
+          localStorage.setItem('user', JSON.stringify(response.data))
+          localStorage.setItem('loggedIn', true)
+          localStorage.setItem('loginExpires', moment().add(24, 'hours').toISOString())
+          resolve(response.data)
+        }
+        reject(response)
+      }, err => {
+        reject(err)
       })
     })
   },

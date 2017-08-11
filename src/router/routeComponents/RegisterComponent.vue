@@ -8,9 +8,16 @@
   </div>
   <div class="login-container flex-center">
     <p class="is-primary has-bold-text title is-4 has-text-centered">
-      Login
+      Register
     </p>
     <form @submit.prevent="submitLogin">
+      <div class="field">
+        <label for="name" class="label">Name</label>
+        <p class="control">
+          <input type="text" id="name" class="input" :class='{ "is-danger": this.errors.name }' v-model='name' required>
+        </p>
+        <p class="help is-danger" v-if='this.errors.name'>{{ this.errors.name }}</p>
+      </div>
       <div class="field">
         <label for="email" class="label">Email Address</label>
         <p class="control">
@@ -26,12 +33,12 @@
         <p class="help is-danger" v-if='this.errors.password'>{{ this.errors.password }}</p>
       </div>
       <button type="submit" class="button is-primary is-pulled-right" :class="{ 'is-loading': loading }">
-        Log In
+        Sign Up
       </button>
     </form>
     <br>
     <p class="has-text-centered">
-      <router-link to="/register">Don't have an account? Register now.</router-link>
+      <router-link to="/login">Already have an account? Login.</router-link>
     </p>
   </div>
 </div>
@@ -93,6 +100,7 @@
 </style>
 
 <script>
+import { mapActions } from 'vuex'
 import { CLEAR_NEXT_ROUTE } from '@/store/mutations'
 import { swal } from 'Helpers'
 import auth from 'Auth'
@@ -100,9 +108,10 @@ import { forEach } from 'lodash'
 import logo from '../../../static/img/logo.svg'
 
 export default {
-  name: 'LoginComponent',
+  name: 'RegisterComponent',
   data () {
     return {
+      name: '',
       email: '',
       password: '',
       loading: false,
@@ -114,8 +123,12 @@ export default {
     submitLogin () {
       this.loading = true
       this.errors = {}
-      const authResponse = auth.attemptLogin(this.email, this.password)
-      authResponse.then(() => {
+      const data = {
+        name: this.name,
+        email: this.email,
+        password: this.password
+      }
+      return this.attemptRegister(data).then(() => {
         this.loading = false
         if (auth.isLoggedIn()) {
           if (this.$store.getters.nextRoute !== null) {
@@ -127,8 +140,8 @@ export default {
           }
         } else {
           swal({
-            'title': 'Login Failed',
-            'text': 'Your login failed. Are you sure your email address and password are correct?',
+            'title': 'Registration Failed',
+            'text': 'Your registration failed. Are you sure your email address and password are correct?',
             'type': 'error'
           })
           this.password = ''
@@ -144,14 +157,15 @@ export default {
           this.errors = validationErrors
         } else {
           swal({
-            'title': 'Login Failed',
-            'text': 'An unkown error occurred while logging in. Please try again.',
+            'title': 'Registration Failed',
+            'text': 'An unkown error occurred while registering your account. Please try again.',
             'type': 'error'
           })
         }
         this.password = ''
       })
-    }
+    },
+    ...mapActions(['attemptRegister'])
   },
   beforeRouteEnter (to, from, next) {
     if (auth.isLoggedIn()) {

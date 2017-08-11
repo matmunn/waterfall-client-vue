@@ -23,9 +23,9 @@ export const actions = {
         if (response.status === 201) {
           resolve(true)
         }
-        reject('There was an error')
-      }, () => {
-        reject('There was an error')
+        reject(response)
+      }, err => {
+        reject(err.response.data)
       })
     })
   },
@@ -35,9 +35,9 @@ export const actions = {
         if (response.status === 200) {
           resolve(true)
         }
-        reject('There was an error')
-      }, () => {
-        reject('There was an error')
+        reject(response)
+      }, err => {
+        reject(err.response.data)
       })
     })
   },

@@ -11,6 +11,7 @@
           </div>
           <div class="nav-right">
             <router-link to='/' class="nav-item">Back to week view</router-link>
+            <router-link to='/logout' class="nav-item">Logout</router-link>
           </div>
         </div>
       </header>
@@ -28,25 +29,14 @@
       <div class="column is-3">
         <aside class="menu nav-menu">
           <p class="menu-label">
-            General
-          </p>
-          <ul class="menu-list">
-            <li>
-              <router-link to='/overview'>Weekly Overview</router-link>
-            </li>
-            <li>
-              <router-link to='/logout'>Logout</router-link>
-            </li>
-          </ul>
-          <p class="menu-label">
             Tasks
           </p>
           <ul class="menu-list">
             <li>
-              <router-link to="/admin/tasks">Tasks List</router-link>
+              <router-link to="/admin/tasks">My Tasks</router-link>
             </li>
             <li>
-              <router-link to='/admin/tasks/mine'>My Tasks</router-link>
+              <router-link to='/admin/tasks/mine'>Tasks I've Added</router-link>
             </li>
             <li>
               <router-link to="/admin/tasks/add">Add Task</router-link>

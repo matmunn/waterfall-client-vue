@@ -2,18 +2,30 @@
 <form @submit.prevent="saveTask" @keydown.enter.prevent=''>
   <div class="field">
     <label class="label" for="user">Job is for</label>
-    <select id="user" class="input" v-model="user" required>
-      <option disabled value="">Choose a user</option>
-      <option v-for="user in users" :value="user.id">{{ user.name }}</option>
-    </select>
+    <div class="control">
+      <div class="select">
+        <select id="user" class="input" v-model="user" required>
+          <option disabled value="">Choose a user</option>
+          <option v-for="user in users" :value="user.id">{{ user.name }}</option>
+        </select>
+      </div>
+    </div>
   </div>
   <div class="field">
     <label class="label" for="client">Project</label>
-    <v-select label='name' :value.sync='client' :options='clients' :on-change='changeVal'></v-select>
+    <div class="control">
+      <div class="select">
+        <v-select label='name' :value.sync='client' :class='{ "is-danger": this.errors.client }' :options='clients' :on-change='changeVal'></v-select>
+      </div>
+    </div>
+    <p class="help is-danger" v-if='this.errors.client'>{{ this.errors.client }}</p>
   </div>
   <div class="field">
     <label class="label" for="description">Task Description</label>
-    <input id='description' type="text" v-model="description" class="input" required>
+    <div class="control">
+      <input id='description' type="text" v-model="description" class="input" :class='{ "is-danger": this.errors.description }' required>
+    </div>
+    <p class="help is-danger" v-if='this.errors.description'>{{ this.errors.description }}</p>
   </div>
   <div class="field">
     <div class="field col-md-6">
@@ -75,6 +87,9 @@
   @extend .input !optional;
   border-radius: 0;
 }
+.v-select .open-indicator {
+  display: none;
+}
 </style>
 
 <script>
@@ -84,6 +99,7 @@ import vSelect from 'vue-select'
 import DateRangePicker from '@/components/DateRangePicker'
 import { mapActions, mapGetters } from 'vuex'
 import Auth from 'Auth'
+import { forEach } from 'lodash'
 import helpers from 'Helpers'
 
 export default {
@@ -125,8 +141,20 @@ export default {
         this.loading = false
         if (err === 'time-error') {
           helpers.toastr.error(`The end time must be after the start time`, 'Error')
+        } else if (err === 'client-not-found-error') {
+          helpers.toastr.error(`The requested client couldn't be found`, 'Error')
+        } else if (err === 'user-not-found-error') {
+          helpers.toastr.error(`The requested user couldn't be found`, 'Error')
         } else {
-          helpers.toastr.error(`An error occurred while processing your request`, 'Error')
+          if (err.response.status === 422) {
+            let validationErrors = err.response.data
+            forEach(validationErrors, (value, key) => {
+              validationErrors[key] = value.join('<br />')
+            })
+            this.errors = validationErrors
+          } else {
+            helpers.toastr.error(`An error occurred while processing your request`, 'Error')
+          }
         }
       })
     },
@@ -154,7 +182,8 @@ export default {
       timings: {
         start: startTime.format('YYYY-MM-DD HH:mm'),
         end: startTime.clone().add(2, 'hours').format('YYYY-MM-DD HH:mm')
-      }
+      },
+      errors: {}
     }
   },
   computed: mapGetters(['users', 'clients']),

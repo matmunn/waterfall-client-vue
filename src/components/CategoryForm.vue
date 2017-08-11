@@ -9,10 +9,12 @@
     <input id="color" type="text" v-model="color" class="input" required>
   </div>
   <div class="field">
-    <label class="label">
-      <input type="checkbox" v-model='visible'>
-      &nbsp;Display in category list?
-    </label>
+    <p class="control">
+      <label class="checkbox">
+        <input type="checkbox" v-model='visible'>
+        &nbsp;Display in category list?
+      </label>
+    </p>
   </div>
   <div class="field">
     <button type="submit" class="button is-primary is-pulled-right" :class="{ 'is-loading': loading }">

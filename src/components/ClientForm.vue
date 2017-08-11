@@ -2,14 +2,18 @@
 <form @submit.prevent="saveClient">
   <div class="field">
     <label class="label" for="name">Client Name</label>
-    <input id="name" type="text" v-model="clientName" class="input" required>
+    <div class="control">
+      <input id="name" type="text" v-model="clientName" class="input" required>
+    </div>
   </div>
   <div class="field">
     <label class="label" for="account_manager">Account Manager</label>
-    <select id="account_manager" v-model="clientAccountManager" class="select" required>
-      <option disabled value="">Choose an account manager</option>
-      <option v-for="u in users" :value="u.id">{{ u.name }}</option>
-    </select>
+    <div class="select">
+      <select id="account_manager" v-model="clientAccountManager" required>
+        <option disabled value="">Choose an account manager</option>
+        <option v-for="u in users" :value="u.id">{{ u.name }}</option>
+      </select>
+    </div>
   </div>
   <div class="field">
     <button type="submit" class="button is-primary is-pulled-right" :class="{ 'is-loading': loading }">

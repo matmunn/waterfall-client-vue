@@ -28,6 +28,9 @@
 </template>
 
 <style scoped lang="scss">
+.mobile {
+  display: none;
+}
 tr.strikethrough {
   opacity: 0.3;
 
@@ -101,6 +104,15 @@ td:nth-of-type(7n+4) {
 .added_during_week {
   background-color: #de8ef8 !important;
   color: #de8ef8 !important;
+}
+
+@media (max-width: 767px) {
+  .desktop {
+    display: none;
+  }
+  .mobile {
+    display: block;
+  }
 }
 </style>
 

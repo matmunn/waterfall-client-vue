@@ -100,6 +100,7 @@ new Vue({
         this.$store.commit(UPDATE_TASK, data.task)
       })
       .listen('.NoteAdded', data => {
+        console.log('event triggerd')
         this.$store.commit(ADD_NOTE, data.note)
       })
       .listen('.NoteEdited', data => {

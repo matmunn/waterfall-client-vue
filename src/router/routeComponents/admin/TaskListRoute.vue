@@ -1,54 +1,61 @@
 <template>
 <div>
-  <div class="text-center space">
-    <div class="row">
-      <div class="field col-md-2 col-md-offset-5">
-        <select class='select inline' v-model='selectedUser'>
-          <option v-for='user in users' :value='user.id'>{{ user.name }}</option>
-        </select>
+  <div class="component-wrapper" v-if='!loading'>
+    <div class="space">
+      <div class="field has-addons has-addons-centered">
+        <div class="control">
+          <div class="select">
+            <select class='select' v-model='selectedUser'>
+              <option v-for='user in users' :value='user.id'>{{ user.name }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="field has-addons has-addons-centered">
+        <p class="control">
+          <DatePicker :value='startDate' :input-class="datepickerInputClass" @selected='chooseDate2' :wrapper-class='datepickerWrapperClass'></DatePicker>
+        </p>
+        <p class="control">
+          <span class="button is-static">
+            to
+          </span>
+        </p>
+        <p class="control">
+          <DatePicker :value='endDate' :input-class="datepickerInputClass" @selected='chooseDate2' :wrapper-class='datepickerWrapperClass'></DatePicker>
+        </p>
       </div>
     </div>
-    <div class="field has-addons has-addons-centered">
-      <p class="control">
-        <DatePicker :value='startDate' :input-class="datepickerInputClass" @selected='chooseDate2' :wrapper-class='datepickerWrapperClass'></DatePicker>
-      </p>
-      <p class="control">
-        <span class="button is-static">
-          to
-        </span>
-      </p>
-      <p class="control">
-        <DatePicker :value='endDate' :input-class="datepickerInputClass" @selected='chooseDate2' :wrapper-class='datepickerWrapperClass'></DatePicker>
-      </p>
-    </div>
+    <table>
+      <tr>
+        <th>
+          User
+        </th>
+        <th>
+          Client
+        </th>
+        <th>
+          Task Description
+        </th>
+        <th>
+          Start Time
+        </th>
+        <th>
+          End Time
+        </th>
+        <th>
+          Hours Allotted
+        </th>
+        <th>
+          Task Completed
+        </th>
+        <th></th>
+      </tr>
+      <AdminTask v-for="task in taskList" :task="task" :key="task.id" />
+    </table>
   </div>
-  <table>
-    <tr>
-      <th>
-        User
-      </th>
-      <th>
-        Client
-      </th>
-      <th>
-        Task Description
-      </th>
-      <th>
-        Start Time
-      </th>
-      <th>
-        End Time
-      </th>
-      <th>
-        Hours Allotted
-      </th>
-      <th>
-        Task Completed
-      </th>
-      <th></th>
-    </tr>
-    <AdminTask v-for="task in taskList" :task="task" :key="task.id" />
-  </table>
+  <div v-else>
+    Loading tasks...
+  </div>
 </div>
 </template>
 
@@ -87,7 +94,8 @@ export default {
       endDate: moment().day(5).hour(18).minute(0).toDate(),
       datepickerInputClass: 'input is-static',
       datepickerWrapperClass: 'inline',
-      selectedUser: ''
+      selectedUser: '',
+      loading: false
     }
   },
   methods: {
@@ -99,13 +107,14 @@ export default {
     ...mapActions(['getAllTasks', 'getAllUsers', 'getAllClients'])
   },
   created () {
+    this.loading = true
     return Promise.all([
       this.getAllUsers().then(() => {
         this.selectedUser = Auth.getUser().id
       }),
       this.getAllTasks(),
       this.getAllClients()
-    ])
+    ]).then(() => { this.loading = false })
   }
 }
 </script>

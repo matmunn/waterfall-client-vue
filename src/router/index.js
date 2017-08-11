@@ -30,6 +30,7 @@ import AdminClientEditRoute from './routeComponents/admin/ClientEditRoute'
 import RouteNotFoundRoute from './routeComponents/RouteNotFoundRoute'
 import LoginComponent from './routeComponents/LoginComponent'
 import LogoutComponent from './routeComponents/LogoutComponent'
+import RegisterComponent from './routeComponents/RegisterComponent'
 
 Vue.use(VueRouter)
 
@@ -161,6 +162,13 @@ const routes = [
   {
     path: '/logout',
     component: LogoutComponent,
+    meta: {
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/register',
+    component: RegisterComponent,
     meta: {
       requiresAuth: false
     }

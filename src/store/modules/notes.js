@@ -19,7 +19,7 @@ export const actions = {
   },
   addNote ({ commit }, noteData) {
     return new Promise((resolve, reject) => {
-      axios.post(`${config.apiHost}/api/note`, noteData).then(response => {
+      axios.post(`${config.apiHost}/api/notes`, noteData).then(response => {
         if (response.status === 201) {
           resolve(true)
         }
@@ -31,7 +31,7 @@ export const actions = {
   },
   editNote ({ commit }, noteData) {
     return new Promise((resolve, reject) => {
-      axios.patch(`${config.apiHost}/api/note/${noteData.id}`, noteData).then(response => {
+      axios.patch(`${config.apiHost}/api/notes/${noteData.id}`, noteData).then(response => {
         if (response.status === 200) {
           resolve(true)
         }
@@ -43,7 +43,7 @@ export const actions = {
   },
   deleteNote ({ commit }, noteId) {
     return new Promise((resolve, reject) => {
-      axios.delete(`${config.apiHost}/api/note/${noteId}`).then(response => {
+      axios.delete(`${config.apiHost}/api/notes/${noteId}`).then(response => {
         if (response.status === 200) {
           resolve(true)
         }
@@ -75,7 +75,7 @@ export const mutations = {
 export const getters = {
   notes: state => state.notes,
   taskNotes: (state, getters) => (taskId) => {
-    return filter(state.notes, note => note.entry_id === taskId)
+    return filter(state.notes, note => note.task_id === taskId)
   }
 }
 

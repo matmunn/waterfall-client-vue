@@ -163,6 +163,7 @@ export default {
       this.$echo.connector.pusher.config.auth.headers['Authorization'] = `Bearer ${Auth.getToken()}`
       this.$echo.private(`App.User.${Auth.getUser().id}`)
         .listen('.NoteAdded', data => {
+          console.log('event triggered privately')
           toastr.info(`A new note was added to your task '${getTask(data.note.entry_id).description}'`, 'Notice')
           if (this.$store.getters.notificationPermission !== 'denied') {
             const n = new Notification('Waterfall', {body: `A new note was added to your task '${getTask(data.note.entry_id).description}'`})
