@@ -67,7 +67,7 @@ import Auth from 'Auth'
 import moment from 'moment'
 // import DatePicker from 'vuejs-datepicker'
 import DatePicker from 'vue-bulma-datepicker'
-import { toastr, getTask } from 'Helpers'
+import { toastr, getTask, getUser } from 'Helpers'
 import { mapActions, mapGetters } from 'vuex'
 import { CategoryTabPanel, Tabs, Tab } from 'Components'
 // import { findIndex } from 'lodash'
@@ -162,22 +162,39 @@ export default {
     if (Auth.isLoggedIn()) {
       this.$echo.connector.pusher.config.auth.headers['Authorization'] = `Bearer ${Auth.getToken()}`
       this.$echo.private(`App.User.${Auth.getUser().id}`)
-        .listen('.NoteAdded', data => {
-          console.log('event triggered privately')
-          toastr.info(`A new note was added to your task '${getTask(data.note.entry_id).description}'`, 'Notice')
+        .stopListening('.NoteAdded')
+        .stopListening('.TaskAdded')
+        .listen('.TaskCompleted', data => {
+          const message = `A task you are the account manager for (${getUser(data.task.user_id).name} - ${data.task.description}) has been completed.`
+          toastr.success(message, 'Notice')
           if (this.$store.getters.notificationPermission !== 'denied') {
-            const n = new Notification('Waterfall', {body: `A new note was added to your task '${getTask(data.note.entry_id).description}'`})
+            const n = new Notification('Waterfall', { body: message })
+            setTimeout(n.close.bind(n), 5000)
+          }
+        })
+        .listen('.TaskIncomplete', data => {
+          const message = `A task you are the account manager for (${getUser(data.task.user_id).name} - ${data.task.description}) has been marked incomplete.`
+          toastr.warning(message, 'Notice')
+          if (this.$store.getters.notificationPermission !== 'denied') {
+            const n = new Notification('Waterfall', { body: message })
+            setTimeout(n.close.bind(n), 5000)
+          }
+        })
+        .listen('.NoteAdded', data => {
+          const message = `A new note was added to your task '${getTask(data.note.entry_id).description}'`
+          toastr.info(message, 'Notice')
+          if (this.$store.getters.notificationPermission !== 'denied') {
+            const n = new Notification('Waterfall', { body: message })
             setTimeout(n.close.bind(n), 5000)
           }
         })
         .listen('.TaskAdded', data => {
-          toastr.info(`A new task was added (${data.task.description})<br>
+          const message = `A new task was added (${data.task.description})<br>
             Starting ${moment(data.task.start_date).format('YYYY-MM-DD HH:mm')}
-          `, 'Notice')
+          `
+          toastr.info(message, 'Notice')
           if (this.$store.getters.notificationPermission !== 'denied') {
-            const n = new Notification('Waterfall', {body: `A new task was added (${data.task.description})\n
-              Starting ${moment(data.task.start_date).format('YYYY-MM-DD HH:mm')}
-            `})
+            const n = new Notification('Waterfall', { body: message.replace('<br>', '\n') })
             setTimeout(n.close.bind(n), 5000)
           }
         })
