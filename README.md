@@ -1,6 +1,12 @@
-# waterfall-client
+# Waterfall Client
 
 > The client portion for waterfall
+
+
+### Configuration
+
+Some configuration is required to point to the server installation. Please see `source/config.js`.
+
 
 ## Build Setup
 
